@@ -1,6 +1,3 @@
-<?php 
-include ('../configurations/conexions.php')
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +6,7 @@ include ('../configurations/conexions.php')
     <title>Document</title>
 </head>
 <body>
-    <form action="/enviar" method="post">
+    <form action="/tcc_senai/configurations/process.php" method="post">
         <p>
             <label for="nome">Nome:</label>
             <input type="text" id="nome" name="nome" required>
