@@ -53,4 +53,4 @@ O sistema será desenvolvido utilizando tecnologias web modernas, com foco em re
   
 ---
 
-Obrigado por conferir o projeto! Para mais informações, entre em contato com [Lucas](mailto:lucasluizsx@gmail.com).
+Obrigado por conferir o projeto! :)
