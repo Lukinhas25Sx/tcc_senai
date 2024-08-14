@@ -50,15 +50,7 @@ O sistema será desenvolvido utilizando tecnologias web modernas, com foco em re
 - Escrever documentação técnica e manual do usuário.
 - Preparar apresentação do TCC.
 - Revisar e refinar o código.
-
-## Contribuição
-
-Se você deseja contribuir para o projeto, sinta-se à vontade para abrir issues ou pull requests. Toda contribuição é bem-vinda!
-
-## Licença
-
-Este projeto está licenciado sob a [Licença MIT](LICENSE).
-
+  
 ---
 
 Obrigado por conferir o projeto! Para mais informações, entre em contato com [Lucas](mailto:lucasluizsx@gmail.com).
