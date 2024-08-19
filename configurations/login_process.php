@@ -1,6 +1,7 @@
 <?php
 include 'conection.php';
 
+
 // Habilitar exibição de erros para depuração
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -44,8 +45,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             error_log("Senha criptografada: $senha_criptografada");
 
             if (password_verify($senha, $senha_criptografada)) {
+                // Senha correta, armazena o ID do usuário na sessão
+                $_SESSION['user_id'] = $row['id'];
                 // Senha correta, redireciona para home.php
-                header("Location: ../home.php");
+                header("Location: ../home.php").PHP_EOL.PHP_EOL;
                 exit(); // Garante que o script não continue executando
             } else {
                 // Senha incorreta
@@ -53,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         } else {
             // Usuário não encontrado
-            echo "As informações de login estão incorretas.";
+            echo "Usuário não encontrado.".PHP_EOL.PHP_EOL;
         }
     } else {
         // Erro na execução da consulta
@@ -65,4 +68,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } else {
     echo "Método de requisição inválido.";
 }
+
 ?>

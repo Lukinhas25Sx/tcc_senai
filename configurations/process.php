@@ -1,5 +1,6 @@
 <?php
 include 'conection.php';
+
 // Habilitar exibição de erros para depuração
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $senha_criptografada = password_hash($senha, PASSWORD_DEFAULT);
 
             // Insere os dados no banco de dados
-            $sql = "INSERT INTO users (nome, email, senha, tipo_de_usuario) VALUES ('$nome', '$email', '$senha_criptografada', '$cargo')";
+            $sql = "INSERT INTO users (nome, email, senha, cargo) VALUES ('$nome', '$email', '$senha_criptografada', '$cargo')";
 
             if ($conn->query($sql) === TRUE) {
                 // Fecha a conexão antes de redirecionar
