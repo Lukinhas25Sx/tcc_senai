@@ -2,7 +2,7 @@
 // Dados de conexão com o banco de dados
 $servername = 'localhost';
 $username = 'root';
-$password = 'senai123';
+$password = '';
 $database = 'banco_de_dados_colaboracao';
 
 // Criar conexão
