@@ -1,0 +1,57 @@
+/* manutencao.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte moderna */
+    background-color: #f0f4f8; /* Fundo suave */
+    margin: 0;
+    padding: 20px; /* Espaçamento interno */
+}
+
+h1 {
+    text-align: center; /* Centraliza o título */
+    color: #333333; /* Cor do título */
+    margin-bottom: 20px; /* Espaço abaixo do título */
+}
+
+ul {
+    list-style-type: none; /* Remove a lista padrão */
+    padding: 0; /* Remove o padding da lista */
+}
+
+li {
+    background-color: #ffffff; /* Fundo branco para cada mensagem */
+    border: 1px solid #e0e0e0; /* Borda suave */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 15px; /* Espaçamento interno */
+    margin-bottom: 15px; /* Espaço entre mensagens */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+strong {
+    color: #555555; /* Cor dos rótulos (strong) */
+}
+
+form {
+    display: flex; /* Flexbox para alinhar o botão */
+    justify-content: flex-end; /* Alinha o botão à direita */
+    margin-top: 10px; /* Espaço acima do formulário */
+}
+
+input[type="submit"] {
+    background-color: #007bff; /* Azul para o botão */
+    color: white; /* Texto branco */
+    border: none; /* Remove borda padrão */
+    border-radius: 5px; /* Bordas arredondadas */
+    padding: 10px 15px; /* Espaçamento interno */
+    cursor: pointer; /* Muda o cursor para pointer */
+    transition: background-color 0.3s; /* Efeito de transição */
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+}
+
+p {
+    text-align: center; /* Centraliza o texto */
+    color: #555555; /* Cor do texto */
+}

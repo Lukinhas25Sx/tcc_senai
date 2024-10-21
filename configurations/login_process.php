@@ -1,4 +1,6 @@
 <?php
+// Inicia a sessão
+session_start();
 include 'conection.php';
 
 // Habilitar exibição de erros para depuração
@@ -35,27 +37,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             error_log("Senha criptografada: $senha_criptografada");
 
             if (password_verify($senha, $senha_criptografada)) {
-                if (!isset($_SESSION)) {
-                    session_start();
-                }
                 $_SESSION['id'] = $id;
                 $_SESSION['nome'] = $nome;
                 $_SESSION['cargo'] = $cargo;  // Armazene o cargo na sessão
             
                 if ($cargo == 'Manutenção') {
-                    header("Location: ../manutencao.php");
+                    header("Location: ../ManuArea/manutencao.php");
                 } elseif ($cargo == 'Professor') {
-                    header("Location: ../profarea.php");
+                    header("Location: ../ProfArea/profarea.php");
                 } else {
                     echo "Cargo não reconhecido.";
                 }
 
                 exit(); // Garante que o script não continue executando
             } else {
-                echo "As informações de login estão incorretas.";
+                $_SESSION['error_message'] = "As informações de login estão incorretas.";
+                header("Location: ../cadastro/index.php"); // Redireciona de volta à página de login
+                exit();
             }
         } else {
-            echo "Usuário não encontrado.";
+            $_SESSION['error_message'] = "Usuário não encontrado.";
+            header("Location: ../cadastro/index.php"); // Redireciona de volta à página de login
+            exit();
         }
     } else {
         echo "Erro na consulta ao banco de dados: " . $conn->error;
