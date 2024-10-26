@@ -12,14 +12,14 @@ error_log("Início do script login_process.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Captura e limpa os dados do formulário
-    $email = $conn->real_escape_string($_POST['email']);
-    $senha = $conn->real_escape_string($_POST['senha']);
+    $email = $conexao->real_escape_string($_POST['email']);
+    $senha = $conexao->real_escape_string($_POST['senha']);
 
     error_log("Dados recebidos: Email: $email");
 
     // Consulta o banco de dados para encontrar o usuário com o e-mail fornecido
     $sql = "SELECT id, nome, senha, cargo FROM users WHERE email = '$email'";
-    $result = $conn->query($sql);
+    $result = $conexao->query($sql);
 
     if ($result) {
         error_log("Resultado da consulta: " . $result->num_rows);
@@ -61,11 +61,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     } else {
-        echo "Erro na consulta ao banco de dados: " . $conn->error;
+        echo "Erro na consulta ao banco de dados: " . $conexao->error;
     }
 
     // Fecha a conexão
-    $conn->close();
+    $conexao->close();
 } else {
     echo "Método de requisição inválido.";
 }

@@ -1,46 +1,84 @@
 <?php
-include '../configurations/conection.php';
+// Inclua o arquivo de configuração com a conexão ao banco de dados
+include '../configurations/conection.php'; // Altere o caminho conforme necessário
+session_start();
 
-// Consulta as reservas com dados de usuário e manutenção
-$query = "SELECT r.id, r.sala, r.data, r.horario_inicio, r.horario_fim, 
-                 r.motivo, r.status, u.nome AS usuario_nome, m.nome AS manutencao_nome 
-          FROM reservas r
-          JOIN users u ON r.usuario_id = u.id
-          LEFT JOIN users m ON r.manutencao_id = m.id";
+// Verifica se o usuário está logado
+if (!isset($_SESSION['id'])) {
+    define('BASE_URL', '/tcc_senai/');
+    die("Você não tem permissão para acessar esta página.<p><a href=\"" . BASE_URL . "cadastro/index.php\">Entrar</a></p>");
+}
 
-$result = $conn->query($query);
+// Verifica se a conexão foi estabelecida
+if (!isset($pdo)) {
+    die("Erro ao conectar ao banco de dados.");
+}
+
+// Consultar todas as reservas confirmadas e pendentes
+$query = "SELECT r.*, u.nome AS usuario_nome 
+          FROM reservas r 
+          JOIN users u ON r.usuario_id = u.id 
+          WHERE r.status IN ('confirmado', 'pendente') 
+          ORDER BY r.data_criacao DESC";
+
+$stmt = $pdo->prepare($query);
+$stmt->execute();
+$reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Filtra as reservas confirmadas e pendentes
+$reservas_confirmadas = array_filter($reservas, function($reserva) {
+    return $reserva['status'] === 'confirmado';
+});
+
+$reservas_pendentes = array_filter($reservas, function($reserva) {
+    return $reserva['status'] === 'pendente';
+});
 ?>
 
-<h2>Reservas</h2>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Sala</th>
-        <th>Data</th>
-        <th>Horário Início</th>
-        <th>Horário Fim</th>
-        <th>Motivo</th>
-        <th>Status</th>
-        <th>Usuário</th>
-        <th>Manutenção</th>
-        <th>Ações</th>
-    </tr>
-    <?php while ($row = $result->fetch_assoc()) { ?>
-        <tr>
-            <td><?php echo $row['id']; ?></td>
-            <td><?php echo $row['sala']; ?></td>
-            <td><?php echo $row['data']; ?></td>
-            <td><?php echo $row['horario_inicio']; ?></td>
-            <td><?php echo $row['horario_fim']; ?></td>
-            <td><?php echo $row['motivo']; ?></td>
-            <td><?php echo $row['status']; ?></td>
-            <td><?php echo $row['usuario_nome']; ?></td>
-            <td><?php echo $row['manutencao_nome'] ?? 'Nenhum'; ?></td>
-            <td>
-                <a href="editar_reserva.php?id=<?php echo $row['id']; ?>">Editar</a> |
-                <a href="excluir_reserva.php?id=<?php echo $row['id']; ?>" 
-                   onclick="return confirm('Tem certeza que deseja excluir esta reserva?')">Excluir</a>
-            </td>
-        </tr>
-    <?php } ?>
-</table>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Reservas</title>
+</head>
+<body>
+    <h1>Reservas Confirmadas</h1>
+    <div class="container">
+        <?php foreach ($reservas_confirmadas as $reserva): ?>
+            <div class="card">
+                <h2>Reserva ID: <?php echo htmlspecialchars($reserva['id']); ?></h2>
+                <p><strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario_nome']); ?></p>
+                <p><strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?></p>
+                <p><strong>Data:</strong> <?php echo htmlspecialchars($reserva['data']); ?></p>
+                <p><strong>Horário Início:</strong> <?php echo htmlspecialchars($reserva['horario_inicio']); ?></p>
+                <p><strong>Horário Fim:</strong> <?php echo htmlspecialchars($reserva['horario_fim']); ?></p>
+                <p><strong>Motivo:</strong> <?php echo nl2br(htmlspecialchars($reserva['motivo'])); ?></p>
+                <p><strong>Status:</strong> <?php echo htmlspecialchars($reserva['status']); ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <h1>Reservas Pendentes</h1>
+    <div class="container">
+        <?php foreach ($reservas_pendentes as $reserva): ?>
+            <div class="card">
+                <h2>Reserva ID: <?php echo htmlspecialchars($reserva['id']); ?></h2>
+                <p><strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario_nome']); ?></p>
+                <p><strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?></p>
+                <p><strong>Data:</strong> <?php echo htmlspecialchars($reserva['data']); ?></p>
+                <p><strong>Horário Início:</strong> <?php echo htmlspecialchars($reserva['horario_inicio']); ?></p>
+                <p><strong>Horário Fim:</strong> <?php echo htmlspecialchars($reserva['horario_fim']); ?></p>
+                <p><strong>Motivo:</strong> <?php echo nl2br(htmlspecialchars($reserva['motivo'])); ?></p>
+                <p><strong>Status:</strong> <?php echo htmlspecialchars($reserva['status']); ?></p>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Botão para criar nova reserva -->
+    <a href="criar_reserva.php">Criar Nova Reserva</a>
+
+    <a href="logout.php">Sair</a>
+</body>
+</html>
