@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 // Inclui o arquivo de conexão
 include 'conection.php'; // Verifique se o caminho está correto
 
-if (!isset($conn)) {
+if (!isset($conexao)) {
     die("Erro: Conexão não estabelecida.");
 }
 
@@ -29,19 +29,19 @@ if (isset($_GET['status']) && $_GET['status'] == 'success') {
 // Checa se os dados foram enviados via POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Verifica se a conexão ainda está aberta
-    if ($conn instanceof mysqli && $conn->ping()) {
+    if ($conexao instanceof mysqli && $conexao->ping()) {
         // Captura e limpa os dados do formulário
-        $nome = $conn->real_escape_string($_POST['nome']);
-        $email = $conn->real_escape_string($_POST['email']);
-        $senha = $conn->real_escape_string($_POST['senha']);
-        $cargo = $conn->real_escape_string($_POST['cargo']);
+        $nome = $conexao->real_escape_string($_POST['nome']);
+        $email = $conexao->real_escape_string($_POST['email']);
+        $senha = $conexao->real_escape_string($_POST['senha']);
+        $cargo = $conexao->real_escape_string($_POST['cargo']);
 
         // Depuração: exibe os dados capturados
         echo "Nome: $nome, Email: $email, Cargo: $cargo<br>";
 
         // Verifica se o email já está cadastrado
         $sql = "SELECT * FROM users WHERE email = '$email'";
-        $result = $conn->query($sql);
+        $result = $conexao->query($sql);
 
         if ($result->num_rows > 0) {
             // Usuário já está cadastrado
@@ -53,20 +53,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Insere os dados no banco de dados
             $sql = "INSERT INTO users (nome, email, senha, cargo) VALUES ('$nome', '$email', '$senha_criptografada', '$cargo')";
 
-            if ($conn->query($sql) === TRUE) {
+            if ($conexao->query($sql) === TRUE) {
                 // Fecha a conexão antes de redirecionar
-                $conn->close();
+                $conexao->close();
 
                 // Redireciona para a página de sucesso
                 header("Location: ../cadastro/index.php?status=success");
                 exit();
             } else {
-                echo "Erro: " . $conn->error;
+                echo "Erro: " . $conexao->error;
             }
         }
 
         // Fecha a conexão
-        $conn->close();
+        $conexao->close();
     } else {
         echo "Conexão com o banco de dados não está ativa";
     }

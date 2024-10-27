@@ -37,9 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar'])) {
     }
 }
 
-// Consultar reservas
+// Consultar reservas, incluindo o nome do usuário que fez a reserva
 $reservaQuery = "
-    SELECT * FROM reservas WHERE status = 'pendente'
+    SELECT r.*, u.nome AS usuario_nome 
+    FROM reservas r 
+    JOIN users u ON r.usuario_id = u.id 
+    WHERE r.status = 'pendente'
 "; // Modifique a condição conforme necessário
 $reservaStmt = $pdo->prepare($reservaQuery);
 $reservaStmt->execute();
@@ -72,47 +75,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_reserva'])) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="manutencao.css">
     <title>Área de Manutenção</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1, h2 {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background: #f4f4f4;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin: 10px 0;
-            padding: 15px;
-            display: inline-block; /* Para deixar as reservas lado a lado */
-            width: 30%; /* Defina a largura desejada */
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-            vertical-align: top; /* Para alinhar as caixas no topo */
-        }
-        form {
-            margin-top: 10px;
-        }
-        .reservas-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* Espaço entre os cards */
-
-        }
-
-        .reserva-card {
-            border: 1px solid #ccc; /* Borda do card */
-            border-radius: 8px; /* Bordas arredondadas */
-            padding: 15px; /* Espaço interno */
-            width: 250px; /* Largura do card */
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Sombra do card */
-        }
-    </style>
 </head>
 <body>
     <h1>Mensagens Recebidas</h1>
@@ -134,24 +96,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_reserva'])) 
     <?php endif; ?>
 
     <h2>Reservas Pendentes</h2>
-<?php if (count($reservas) > 0): ?>
-    <div class="reservas-container">
-        <?php foreach ($reservas as $reserva): ?>
-            <div class="reserva-card">
-                <strong>Motivo:</strong> <?php echo htmlspecialchars($reserva['motivo']); ?> <br>
-                <strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?> <br>
-                <strong>Data:</strong> <?php echo htmlspecialchars($reserva['data']); ?> <br>
-                <strong>Horário:</strong> <?php echo htmlspecialchars($reserva['horario_inicio']) . ' - ' . htmlspecialchars($reserva['horario_fim']); ?> <br>
-                <form action="manutencao.php" method="POST">
-                    <input type="hidden" name="reserva_id" value="<?php echo htmlspecialchars($reserva['id']); ?>">
-                    <input type="submit" name="confirmar_reserva" value="Confirmar Reserva">
-                </form>
-            </div>
-        <?php endforeach; ?>
-    </div>
-<?php else: ?>
-    <p>Não há reservas pendentes.</p>
-<?php endif; ?>
+    <?php if (count($reservas) > 0): ?>
+        <div class="reservas-container">
+            <?php foreach ($reservas as $reserva): ?>
+                <div class="reserva-card">
+                    <strong style="font-size: 1.2em;">Solicitante:</strong> <?php echo htmlspecialchars($reserva['usuario_nome']); ?> <br> <!-- Nome do usuário -->
+                    <strong>Motivo:</strong> <?php echo htmlspecialchars($reserva['motivo']); ?> <br>
+                    <strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?> <br>
+                    <strong>Data:</strong> <?php echo date('d/m/Y', strtotime($reserva['data'])) . '<br>'; ?>
+                    <strong>Horário:</strong> <?php echo htmlspecialchars(date('H:i', strtotime($reserva['horario_inicio']))) . ' ~ ' . htmlspecialchars(date('H:i', strtotime($reserva['horario_fim']))); ?> <br>
+                    <form action="manutencao.php" method="POST">
+                        <input type="hidden" name="reserva_id" value="<?php echo htmlspecialchars($reserva['id']); ?>">
+                        <input type="submit" name="confirmar_reserva" value="Confirmar Reserva">
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p>Não há reservas pendentes.</p>
+    <?php endif; ?>
 
     <p>Bem-vindo, <?php echo htmlspecialchars($_SESSION['nome']); ?></p>
 </body>

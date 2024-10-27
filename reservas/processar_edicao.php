@@ -10,15 +10,17 @@ $motivo = $_POST['motivo'];
 
 $query = "UPDATE reservas SET sala = ?, data = ?, horario_inicio = ?, horario_fim = ?, motivo = ? 
           WHERE id = ?";
-$stmt = $conn->prepare($query);
+$stmt = $conexao->prepare($query);
 $stmt->bind_param('sssssi', $sala, $data, $horario_inicio, $horario_fim, $motivo, $id);
 
 if ($stmt->execute()) {
-    echo "Reserva atualizada com sucesso!";
+    // Redireciona para reservas.php se a atualização for bem-sucedida
+    header('Location: http://localhost/tcc_senai/reservas/reservas.php');
+    exit(); // Termina a execução do script
 } else {
     echo "Erro: " . $stmt->error;
 }
 
 $stmt->close();
-$conn->close();
+$conexao->close();
 ?>

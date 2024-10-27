@@ -1,17 +1,27 @@
 <?php
 include '../configurations/conection.php';
 
-$sql = "SELECT data FROM reservas WHERE status = 'confirmado'";
+// Consulta as reservas confirmadas no banco de dados, incluindo data e intervalo de horário
+$sql = "SELECT data, horario_inicio, horario_fim FROM reservas WHERE status = 'confirmado'";
 $result = $conexao->query($sql);
 
 $datas_indisponiveis = [];
 
-while($row = $result->fetch_assoc()) {
-    $datas_indisponiveis[] = $row['data'];
+// Formata as datas e horários para que o calendário entenda os intervalos ocupados
+while ($row = $result->fetch_assoc()) {
+    $datas_indisponiveis[] = [
+        'start' => $row['data'] . 'T' . $row['horario_inicio'], // Data e início do horário
+        'end' => $row['data'] . 'T' . $row['horario_fim'],      // Data e fim do horário
+        'display' => 'background',
+        'color' => '#FF0000' // Define a cor para indicar indisponibilidade
+    ];
 }
 
+// Define o cabeçalho e retorna as datas indisponíveis em JSON
+header('Content-Type: application/json');
 echo json_encode($datas_indisponiveis);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

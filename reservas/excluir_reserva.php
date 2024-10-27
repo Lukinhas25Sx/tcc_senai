@@ -4,7 +4,7 @@ include '../configurations/conection.php';
 $id = $_GET['id'];
 
 $query = "DELETE FROM reservas WHERE id = ?";
-$stmt = $conn->prepare($query);
+$stmt = $conexao->prepare($query);
 $stmt->bind_param('i', $id);
 
 if ($stmt->execute()) {
@@ -14,5 +14,5 @@ if ($stmt->execute()) {
 }
 
 $stmt->close();
-$conn->close();
+$conexao->close();
 ?>

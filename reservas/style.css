@@ -61,3 +61,26 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #218838;
 }
+
+.btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 15px;
+    background-color: #007BFF; /* Cor do botão */
+    color: white;
+    text-decoration: none; /* Remove sublinhado */
+    border-radius: 5px;
+    border: none; /* Remove a borda padrão dos botões */
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Cor ao passar o mouse */
+}
+
+.button-group {
+    display: flex; /* Usar flexbox para alinhar os botões lado a lado */
+    gap: 10px; /* Espaço entre os botões */
+    margin-top: 10px; /* Margem acima dos botões */
+}
+

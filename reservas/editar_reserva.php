@@ -3,7 +3,7 @@ include '../configurations/conection.php';
 
 $id = $_GET['id'];
 $query = "SELECT * FROM reservas WHERE id = ?";
-$stmt = $conn->prepare($query);
+$stmt = $conexao->prepare($query);
 $stmt->bind_param('i', $id);
 $stmt->execute();
 $result = $stmt->get_result();

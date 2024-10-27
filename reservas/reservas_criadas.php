@@ -8,7 +8,7 @@ $query = "SELECT r.id, r.sala, r.data, r.horario_inicio, r.horario_fim,
           JOIN users u ON r.usuario_id = u.id
           LEFT JOIN users m ON r.manutencao_id = m.id";
 
-$result = $conn->query($query);
+$result = $conexao->query($query);
 ?>
 
 <h2>Reservas</h2>
