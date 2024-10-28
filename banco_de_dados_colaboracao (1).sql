@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 22/10/2024 às 00:27
+-- Tempo de geração: 28/10/2024 às 04:10
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -42,7 +42,9 @@ CREATE TABLE `mensagens` (
 
 INSERT INTO `mensagens` (`id`, `remetente_id`, `destinatario_id`, `mensagem`, `timestamp`, `confirmada`) VALUES
 (38, 1, 2, 'ola 2\r\n', '2024-10-12 17:12:12', 1),
-(39, 1, 2, 'dfjlsçkaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskv sknsksksksksksksknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknskn', '2024-10-12 17:17:27', 0);
+(39, 1, 2, 'dfjlsçkaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskaskv sknsksksksksksksknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknsknskn', '2024-10-12 17:17:27', 1),
+(40, 1, 2, 'ABaba', '2024-10-26 22:10:30', 0),
+(41, 1, 2, '123412341234', '2024-10-26 22:12:21', 0);
 
 -- --------------------------------------------------------
 
@@ -52,6 +54,7 @@ INSERT INTO `mensagens` (`id`, `remetente_id`, `destinatario_id`, `mensagem`, `t
 
 CREATE TABLE `reservas` (
   `id` int(11) NOT NULL,
+  `usuario` varchar(140) NOT NULL,
   `usuario_id` int(11) NOT NULL,
   `sala` varchar(100) NOT NULL,
   `data` date NOT NULL,
@@ -62,6 +65,17 @@ CREATE TABLE `reservas` (
   `status` enum('pendente','confirmado','cancelado') DEFAULT 'pendente',
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `reservas`
+--
+
+INSERT INTO `reservas` (`id`, `usuario`, `usuario_id`, `sala`, `data`, `horario_inicio`, `horario_fim`, `motivo`, `manutencao_id`, `status`, `data_criacao`) VALUES
+(13, '', 3, 'Biblioteca', '2024-10-28', '20:17:00', '21:17:00', 'mentira\r\n', 2, 'pendente', '2024-10-27 22:17:44'),
+(15, '', 1, 'Biblioteca', '2024-10-30', '23:23:00', '00:19:00', 'asdfasfasdfasdf', 2, 'pendente', '2024-10-27 22:19:30'),
+(16, '', 1, 'Biblioteca', '2024-10-16', '20:51:00', '19:51:00', '', 2, 'pendente', '2024-10-27 22:52:02'),
+(17, '', 1, 'Informatica', '2024-10-21', '20:53:00', '20:53:00', 'zbb', 2, 'pendente', '2024-10-27 22:53:29'),
+(18, '', 2, 'Laboratorio de Quimica', '2024-10-15', '14:55:00', '18:56:00', 'Vo sim', 2, 'pendente', '2024-10-27 22:55:27');
 
 -- --------------------------------------------------------
 
@@ -84,7 +98,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `nome`, `email`, `senha`, `cargo`, `data_criacao`) VALUES
 (1, '1234', '1234@gmail.com', '$2y$10$BdxRG/7Nwne4HyFdo6NzLOYWYe0j20T7TR3CmmBolS90khnW9BuQW', 'Professor', '2024-10-12 14:46:57'),
-(2, '12345', '12345@gmail.com', '$2y$10$rS..FaiVsvZxcQHtkzhONOytKnSHrtbICUzSRgxJ2p6AlHcadap6.', 'Manutenção', '2024-10-12 14:58:47');
+(2, '12345', '12345@gmail.com', '$2y$10$rS..FaiVsvZxcQHtkzhONOytKnSHrtbICUzSRgxJ2p6AlHcadap6.', 'Manutenção', '2024-10-12 14:58:47'),
+(3, 'Lukinhas25Sx', 'lucasluizsx@gmail.com', '$2y$10$3DcPD9vyi2Htg0vxG7.O8eNVmMX40nmU1pGr8SW3lne6ak2E4HK1y', 'Professor', '2024-10-27 21:56:52');
 
 --
 -- Índices para tabelas despejadas
@@ -100,9 +115,7 @@ ALTER TABLE `mensagens`
 -- Índices de tabela `reservas`
 --
 ALTER TABLE `reservas`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `manutencao_id` (`manutencao_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `users`
@@ -118,30 +131,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de tabela `mensagens`
 --
 ALTER TABLE `mensagens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT de tabela `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de tabela `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- Restrições para tabelas despejadas
---
-
---
--- Restrições para tabelas `reservas`
---
-ALTER TABLE `reservas`
-  ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`manutencao_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+  MODIFY `id` int(16) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
