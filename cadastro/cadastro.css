@@ -74,7 +74,30 @@ body {
 }
 
 .login-form button:hover {
-    background-color: #001d4d;
+    background-color: #0e62e9;
 }
 
+.cargo-buttons {
+    display: flex;
+    gap: 10px; /* Espaçamento entre os botões */
+    margin: 10px 0; /* Margem acima e abaixo dos botões */
+}
 
+.cargo-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #002060; /* Cor do botão */
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cargo-button:hover {
+    background-color: #001d4d; /* Cor ao passar o mouse */
+}
+
+.cargo-button.active {
+    background-color: #0e62e9; /* Cor para o botão ativo */
+    color: white;
+}
