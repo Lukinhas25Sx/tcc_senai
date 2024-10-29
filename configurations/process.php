@@ -6,9 +6,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Inclui o arquivo de conexão
-include 'conection.php'; // Verifique se o caminho está correto
-
 if (!isset($conexao)) {
     die("Erro: Conexão não estabelecida.");
 }
