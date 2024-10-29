@@ -77,12 +77,7 @@ $result_datas_indisponiveis = $pdo->query($query_datas_indisponiveis);
 
 $datas_indisponiveis = [];
 while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
-    $datas_indisponiveis[] = [
-        'start' => $row['data'] . 'T' . $row['horario_inicio'],
-        'end' => $row['data'] . 'T' . $row['horario_fim'],
-        'display' => 'background',
-        'color' => '#FF0000'
-    ];
+    $datas_indisponiveis[] = $row['data'];
 }
 ?>
 
@@ -92,23 +87,37 @@ while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
     <meta charset="UTF-8">
     <title>Criar Reserva</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.5.1/main.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.5.1/main.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        .sala-options button {
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .sala-options button.active {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h2>Criar Reserva</h2>
     <form method="POST">
-        <label for="sala">Sala:</label>
-        <select name="sala" id="sala" required>
-            <option value="">Selecione</option>
-            <option value="Biblioteca">Biblioteca</option>
-            <option value="Informatica">Informática</option>
-            <option value="Laboratorio de Quimica">Laboratório de Química</option>
-            <option value="Lego">Lego</option>
-        </select>
+        <label>Sala:</label>
+        <div class="sala-options">
+            <button type="button" onclick="selectSala('Biblioteca')">Biblioteca</button>
+            <button type="button" onclick="selectSala('Informatica')">Informática</button>
+            <button type="button" onclick="selectSala('Laboratorio de Quimica')">Laboratório de Química</button>
+            <button type="button" onclick="selectSala('Lego')">Lego</button>
+        </div>
+        <input type="hidden" name="sala" id="sala" required>
 
         <label for="data">Data:</label>
-        <input type="date" name="data" id="data" required>
+        <input type="text" name="data" id="data" required>
 
         <label for="horario_inicio">Horário de Início:</label>
         <input type="time" name="horario_inicio" id="horario_inicio" required>
@@ -130,37 +139,22 @@ while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
         <button type="submit">Criar Reserva</button>
     </form>
 
-    <div id="calendar"></div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    let calendarEl = document.getElementById('calendar');
-
-    // Converte as datas indisponíveis do PHP para o JavaScript
-    let datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
-
-    let calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        selectable: true,
-        dateClick: function(info) {
-            // Impede a seleção de dias indisponíveis
-            const indisponivel = datasIndisponiveis.some(evento => {
-                const [eventoData] = evento.start.split('T');
-                return info.dateStr === eventoData;
+    <script>
+        // Configuração do Flatpickr para bloquear datas indisponíveis
+        document.addEventListener('DOMContentLoaded', function() {
+            const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
+            flatpickr("#data", {
+                dateFormat: "Y-m-d",
+                disable: datasIndisponiveis.map(data => new Date(data))
             });
+        });
 
-            if (indisponivel) {
-                alert("Este dia está indisponível para reserva.");
-            } else {
-                alert("Dia disponível para reserva!");
-            }
-        },
-        events: datasIndisponiveis
-    });
-
-    calendar.render();
-});
-</script>
-
+        // Função para selecionar a sala e aplicar o estilo de botão ativo
+        function selectSala(sala) {
+            document.getElementById('sala').value = sala;
+            document.querySelectorAll('.sala-options button').forEach(button => button.classList.remove('active'));
+            document.querySelector(`button[onclick="selectSala('${sala}')"]`).classList.add('active');
+        }
+    </script>
 </body>
 </html>
