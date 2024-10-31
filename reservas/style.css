@@ -84,3 +84,23 @@ input[type="submit"]:hover {
     margin-top: 10px; /* Margem acima dos botões */
 }
 
+.sala-options button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.sala-options button.active {
+    background-color: #0056b3;
+}
+.flatpickr-day.disabled {
+    background-color: #ffcccc !important; /* Dias indisponíveis em vermelho claro */
+    color: #b22222 !important;
+    cursor: not-allowed;
+}
+.flatpickr-day.weekend {
+    color: #808080; /* Fins de semana em cinza */
+}
