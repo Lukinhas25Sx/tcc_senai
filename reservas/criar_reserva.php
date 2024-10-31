@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <h2>Criar Reserva</h2>
-    <form method="POST">
+    <form method="POST" onsubmit="return validarFormulario()">
         <label>Sala:</label>
         <div class="sala-options">
             <button type="button" onclick="selectSala('Biblioteca')">Biblioteca</button>
@@ -106,16 +106,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <input type="text" name="data" id="data" required style="display: none;">
         <div id="dataContainer"></div>
 
-
         <label for="horario_inicio">Horário de Início:</label>
-        <input type="time" name="horario_inicio" id="horario_inicio" required>
+        <input type="text" name="horario_inicio" id="horario_inicio" placeholder="Selecione o horário de início" required>
 
         <label for="horario_fim">Horário de Fim:</label>
-        <input type="time" name="horario_fim" id="horario_fim" required>
-
+        <input type="text" name="horario_fim" id="horario_fim" placeholder="Selecione o horário de fim" required>
 
         <label for="motivo">Motivo:</label>
-        <textarea name="motivo" id="motivo"></textarea>
+        <textarea name="motivo" id="motivo" required></textarea>
 
         <label for="manutencao_id">Enviar para Manutenção:</label>
         <select name="manutencao_id" id="manutencao_id" required>
@@ -130,25 +128,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-        const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
+            const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
 
-        flatpickr("#data", {
-            dateFormat: "Y-m-d",
-            inline: true,
-            minDate: "today",
-            disable: [
-                ...datasIndisponiveis.map(data => new Date(data)),
-                function(date) {
-                    return (date.getDay() === 6 || date.getDay() === 0);
+            flatpickr("#data", {
+                dateFormat: "Y-m-d",
+                inline: true,
+                minDate: "today",
+                disable: [
+                    ...datasIndisponiveis.map(data => new Date(data)),
+                    function(date) {
+                        return (date.getDay() === 6 || date.getDay() === 0);
+                    }
+                ],
+                appendTo: document.getElementById('dataContainer'),
+                onChange: function(selectedDates, dateStr) {
+                    document.getElementById('data').value = dateStr;
                 }
-            ],
-            appendTo: document.getElementById('dataContainer'),
-            onChange: function(selectedDates, dateStr) {
-                document.getElementById('data').value = dateStr;
-            }
+            });
         });
-    });
-
 
         // Função para selecionar a sala e aplicar o estilo de botão ativo
         function selectSala(sala) {
@@ -157,52 +154,72 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             document.querySelector(`button[onclick="selectSala('${sala}')"]`).classList.add('active');
         }
 
+        // Validação do formulário
+        function validarFormulario() {
+            const sala = document.getElementById('sala').value;
+            const data = document.getElementById('data').value;
+            const horarioInicio = document.getElementById('horario_inicio').value;
+            const horarioFim = document.getElementById('horario_fim').value;
+            const motivo = document.getElementById('motivo').value;
+
+            if (!sala) {
+                alert("Por favor, selecione uma sala.");
+                return false;
+            }
+
+            if (!data) {
+                alert("Por favor, selecione uma data.");
+                return false;
+            }
+
+            if (!horarioInicio) {
+                alert("Por favor, selecione o horário de início.");
+                return false;
+            }
+
+            if (!horarioFim) {
+                alert("Por favor, selecione o horário de fim.");
+                return false;
+            }
+
+            if (!motivo) {
+                alert("Por favor, informe o motivo da reserva.");
+                return false;
+            }
+
+            return true;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-    // Configurar datas indisponíveis no calendário
-    const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
+            // Configuração do campo de horário de início
+            const horarioInicioPicker = flatpickr("#horario_inicio", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minTime: "08:00",
+                maxTime: "18:00",
+                onChange: function(selectedDates) {
+                    if (selectedDates.length > 0) {
+                        const horarioInicio = selectedDates[0];
+                        horarioFimPicker.set("minTime", horarioInicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                        horarioFimPicker.setDate(null);
+                    }
+                }
+            });
 
-    // Calendário para a data
-    flatpickr("#data", {
-        dateFormat: "Y-m-d",
-        inline: true,
-        minDate: "today",
-        disable: [
-            ...datasIndisponiveis.map(data => new Date(data)),
-            function(date) {
-                return (date.getDay() === 6 || date.getDay() === 0);
-            }
-        ],
-        appendTo: document.getElementById('dataContainer'),
-        onChange: function(selectedDates, dateStr) {
-            document.getElementById('data').value = dateStr;
-        }
-    });
-
-    // Configuração de intervalo de tempo para o campo de horário
-    flatpickr("#horario_intervalo", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        mode: "range", // Modo intervalo para seleção de início e fim
-        minTime: "08:00", // Horário mínimo
-        maxTime: "18:00", // Horário máximo
-        onChange: function(selectedDates) {
-            if (selectedDates.length === 2) {
-                // Se os dois horários foram selecionados, exiba-os no formato desejado
-                const horarioInicio = selectedDates[0].toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const horarioFim = selectedDates[1].toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
-                // Exibe o intervalo no campo de input e salva em campos ocultos
-                document.getElementById('horario_intervalo').value = `${horarioInicio} - ${horarioFim}`;
-                document.getElementById('horario_inicio').value = horarioInicio;
-                document.getElementById('horario_fim').value = horarioFim;
-            }
-        }
-    });
-});
-
+            // Configuração do campo de horário de fim
+            const horarioFimPicker = flatpickr("#horario_fim", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minTime: "08:00",
+                maxTime: "18:00",
+            });
+        });
     </script>
 </body>
 </html>
+
 
