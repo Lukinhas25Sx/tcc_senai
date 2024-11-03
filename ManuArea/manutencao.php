@@ -37,16 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar'])) {
     }
 }
 
-// Consultar reservas, incluindo o nome do usuário que fez a reserva
+// Consultar reservas, incluindo o nome do usuário que fez a reserva, somente para o usuário logado
 $reservaQuery = "
     SELECT r.*, u.nome AS usuario_nome 
     FROM reservas r 
     JOIN users u ON r.usuario_id = u.id 
-    WHERE r.status = 'pendente'
-"; // Modifique a condição conforme necessário
+    WHERE r.status = 'pendente' AND r.manutencao_id = :user_id
+";
+
 $reservaStmt = $pdo->prepare($reservaQuery);
-$reservaStmt->execute();
+$reservaStmt->execute(['user_id' => $_SESSION['id']]);
 $reservas = $reservaStmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 // Confirmar reserva
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_reserva'])) {

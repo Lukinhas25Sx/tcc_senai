@@ -9,6 +9,18 @@ if (!isset($_SESSION['id'])) {
     die("Você não tem permissão para acessar esta página.<p><a href=\"" . BASE_URL . "cadastro/index.php\">Entrar</a></p>");
 }
 
+// Consulta o cargo do usuário logado
+$query_cargo = "SELECT cargo FROM users WHERE id = :usuario_id";
+$stmt_cargo = $pdo->prepare($query_cargo);
+$stmt_cargo->execute(['usuario_id' => $_SESSION['id']]);
+$cargo = $stmt_cargo->fetchColumn();
+
+// Verifica se o usuário é de manutenção e impede o acesso
+if ($cargo === 'Manutenção') {
+    die("Usuários de manutenção não têm permissão para criar reservas.");
+}
+
+
 // Busca os usuários de manutenção para selecionar na reserva
 $query_manutencao = "SELECT id, nome FROM users WHERE cargo = 'Manutenção'";
 $result_manutencao = $pdo->query($query_manutencao);
@@ -17,6 +29,7 @@ $result_manutencao = $pdo->query($query_manutencao);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Obtém dados do formulário
     $usuario_id = $_SESSION['id'];
+    $usuario = $_POST['usuario']; // Novo campo 'usuario'
     $sala = $_POST['sala'];
     $data = $_POST['data'];
     $horario_inicio = $_POST['horario_inicio'];
@@ -43,11 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Erro: Já existe uma reserva confirmada para o mesmo intervalo de horário nesta sala e dia.";
     } else {
         // Insere a reserva no banco de dados se não houver conflito
-        $query = "INSERT INTO reservas (usuario_id, sala, data, horario_inicio, horario_fim, motivo, manutencao_id, status)
-                  VALUES (:usuario_id, :sala, :data, :horario_inicio, :horario_fim, :motivo, :manutencao_id, 'pendente')";
-        
+        $query = "INSERT INTO reservas (usuario, usuario_id, sala, data, horario_inicio, horario_fim, motivo, manutencao_id, status)
+                  VALUES (:usuario, :usuario_id, :sala, :data, :horario_inicio, :horario_fim, :motivo, :manutencao_id, 'pendente')";
+
         $stmt = $pdo->prepare($query);
         $params = [
+            'usuario' => $usuario,
             'usuario_id' => $usuario_id,
             'sala' => $sala,
             'data' => $data,
@@ -67,19 +81,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-        // Busca as datas e horários indisponíveis para o calendário
-        $query_datas_indisponiveis = "
-            SELECT data, horario_inicio, horario_fim 
-            FROM reservas 
-            WHERE status = 'confirmado'
-        ";
-        $result_datas_indisponiveis = $pdo->query($query_datas_indisponiveis);
+// Busca as datas e horários indisponíveis para o calendário
+$query_datas_indisponiveis = "
+    SELECT data, horario_inicio, horario_fim 
+    FROM reservas 
+    WHERE status = 'confirmado'
+";
+$result_datas_indisponiveis = $pdo->query($query_datas_indisponiveis);
 
-        $datas_indisponiveis = [];
-        while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
-            $datas_indisponiveis[] = $row['data'];
-        }
-        ?>
+$datas_indisponiveis = [];
+while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
+    $datas_indisponiveis[] = $row['data'];
+}
+?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -93,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <h2>Criar Reserva</h2>
     <form method="POST" onsubmit="return validarFormulario()">
+        <input type="hidden" name="usuario" value="<?php echo $_SESSION['id']; ?>"> <!-- Adiciona o campo 'usuario' como hidden -->
         <label>Sala:</label>
         <div class="sala-options">
             <button type="button" onclick="selectSala('Biblioteca')">Biblioteca</button>
@@ -147,14 +162,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             });
         });
 
-        // Função para selecionar a sala e aplicar o estilo de botão ativo
         function selectSala(sala) {
             document.getElementById('sala').value = sala;
             document.querySelectorAll('.sala-options button').forEach(button => button.classList.remove('active'));
             document.querySelector(`button[onclick="selectSala('${sala}')"]`).classList.add('active');
         }
 
-        // Validação do formulário
         function validarFormulario() {
             const sala = document.getElementById('sala').value;
             const data = document.getElementById('data').value;
@@ -191,35 +204,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Configuração do campo de horário de início
             const horarioInicioPicker = flatpickr("#horario_inicio", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
                 minTime: "08:00",
-                maxTime: "18:00",
-                onChange: function(selectedDates) {
-                    if (selectedDates.length > 0) {
-                        const horarioInicio = selectedDates[0];
-                        horarioFimPicker.set("minTime", horarioInicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                        horarioFimPicker.setDate(null);
-                    }
-                }
+                maxTime: "22:00"
             });
 
-            // Configuração do campo de horário de fim
             const horarioFimPicker = flatpickr("#horario_fim", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
                 minTime: "08:00",
-                maxTime: "18:00",
+                maxTime: "22:00"
+            });
+
+            horarioInicioPicker.config.onChange.push(function(selectedDates, dateStr) {
+                horarioFimPicker.set("minTime", dateStr);
             });
         });
     </script>
 </body>
 </html>
-
-

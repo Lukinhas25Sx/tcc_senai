@@ -1,6 +1,6 @@
 <?php
 // Inclua o arquivo de configuração com a conexão ao banco de dados
-include '../configurations/conection.php'; // Altere o caminho conforme necessário
+include '../configurations/conection.php';
 session_start();
 
 // Verifica se o usuário está logado
@@ -17,7 +17,7 @@ if (!isset($pdo)) {
 // Obtém o ID do usuário logado
 $usuario_id = $_SESSION['id'];
 
-// Consultar todas as reservas confirmadas e pendentes para o usuário logado
+// Consulta todas as reservas confirmadas e pendentes para o usuário logado
 $query = "SELECT r.*, u.nome AS usuario_nome 
           FROM reservas r 
           JOIN users u ON r.usuario_id = u.id 
@@ -26,7 +26,7 @@ $query = "SELECT r.*, u.nome AS usuario_nome
           ORDER BY r.data_criacao DESC";
 
 $stmt = $pdo->prepare($query);
-$stmt->bindParam(':usuario_id', $usuario_id);
+$stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
 $stmt->execute();
 $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -41,11 +41,11 @@ $reservas_pendentes = array_filter($reservas, function($reserva) {
 
 // Função para formatar data e hora
 function formatarData($data) {
-    return date('d/m/Y', strtotime($data)); // Formato: DD/MM/AAAA
+    return date('d/m/Y', strtotime($data));
 }
 
 function formatarHora($dataHora) {
-    return date('H:i', strtotime($dataHora)); // Formato: HH:MM
+    return date('H:i', strtotime($dataHora));
 }
 
 // Excluir reserva
@@ -55,8 +55,8 @@ if (isset($_POST['excluir'])) {
     // Consulta para excluir a reserva
     $delete_query = "DELETE FROM reservas WHERE id = :reserva_id AND usuario_id = :usuario_id";
     $delete_stmt = $pdo->prepare($delete_query);
-    $delete_stmt->bindParam(':reserva_id', $reserva_id);
-    $delete_stmt->bindParam(':usuario_id', $usuario_id);
+    $delete_stmt->bindParam(':reserva_id', $reserva_id, PDO::PARAM_INT);
+    $delete_stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
     $delete_stmt->execute();
 
     // Redirecionar para a mesma página para evitar reenvio de formulário
@@ -119,15 +119,12 @@ if (isset($_POST['excluir'])) {
                         </form>
                     </div>
                 </div>
-
-
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
 
     <!-- Botão para criar nova reserva -->
     <a href="criar_reserva.php">Criar Nova Reserva</a>
-
-    <a href="logout.php">Sair</a>
+    <a href="../ProfArea/profarea.php">Sair</a>
 </body>
 </html>
