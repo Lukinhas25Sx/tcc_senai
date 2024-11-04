@@ -1,6 +1,7 @@
 <?php
 include '../configurations/conection.php';
 
+
 $id = $_GET['id'];
 $query = "SELECT * FROM reservas WHERE id = ?";
 $stmt = $conexao->prepare($query);

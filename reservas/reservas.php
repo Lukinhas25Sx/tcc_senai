@@ -1,7 +1,6 @@
 <?php
-// Inclua o arquivo de configuração com a conexão ao banco de dados
 include '../configurations/conection.php';
-session_start();
+include '../configurations/header.php'; // header.php deve iniciar a sessão
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['id'])) {
@@ -64,6 +63,7 @@ if (isset($_POST['excluir'])) {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">

@@ -1,7 +1,7 @@
 <?php
 // Inclua o arquivo de configuração com a conexão ao banco de dados
 include '../configurations/conection.php'; // Altere o caminho conforme necessário
-session_start();
+include '../configurations/header.php'; // header.php deve iniciar a sessão
 
 // Verifica se o usuário está logado e se o cargo é 'Professor'
 if (!isset($_SESSION['id']) || $_SESSION['cargo'] !== 'Professor') {
@@ -192,5 +192,6 @@ $mensagens_enviadas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Usando FETCH_ASSOC p
     <!-- Botão para fazer reserva -->
     <a href="../reservas/reservas.php" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
     <a href="logout.php">Sair</a>
+    <a href="../configurations/perfil.php">Perfil</a>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 include '../configurations/conection.php';
 
+
 $id = $_GET['id'];
 
 $query = "DELETE FROM reservas WHERE id = ?";

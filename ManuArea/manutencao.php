@@ -1,14 +1,13 @@
 <?php
-session_start();
+// Inclua o arquivo de configuração com a conexão ao banco de dados
+include '../configurations/conection.php';
+include '../configurations/header.php'; // header.php deve iniciar a sessão
 
 // Verifica se o usuário está logado e se o cargo é 'Manutenção'
 if (!isset($_SESSION['id']) || $_SESSION['cargo'] !== 'Manutenção') {
     define('BASE_URL', '/tcc_senai/');
     die("Você não tem permissão para acessar esta página.<p><a href=\"" . BASE_URL . "cadastro/index.php\">Entrar</a></p>");
 }
-
-// Inclua o arquivo de configuração com a conexão ao banco de dados
-include '../configurations/conection.php';
 
 // Consulta para buscar mensagens que foram enviadas para a manutenção e que não foram confirmadas
 $query = "

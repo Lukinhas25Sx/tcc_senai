@@ -2,6 +2,7 @@
 // Inclui a conexão com o banco de dados e a proteção de sessão
 include '../configurations/conection.php';
 include '../configurations/protect.php';
+include '../configurations/header.php'; // header.php deve iniciar a sessão
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['id'])) {

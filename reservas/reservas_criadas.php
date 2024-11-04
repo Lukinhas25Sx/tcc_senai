@@ -1,5 +1,6 @@
 <?php
 include '../configurations/conection.php';
+include '../configurations/header.php'; // header.php deve iniciar a sessão
 
 // Consulta as reservas com dados de usuário e manutenção
 $query = "SELECT r.id, r.sala, r.data, r.horario_inicio, r.horario_fim, 
