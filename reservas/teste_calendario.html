@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste do Calendário Flatpickr</title>
+    <!-- Inclui o CSS do Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <h2>Teste do Calendário</h2>
+    <label for="data">Data:</label>
+    <!-- Campo de data para o calendário Flatpickr -->
+    <input type="text" id="data" placeholder="Selecione uma data" required>
+
+    <!-- Inclui o JavaScript do Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Inicializa o Flatpickr no campo de data
+        flatpickr("#data", {
+            dateFormat: "d/m/Y",
+            minDate: "today"
+        });
+    </script>
+</body>
+</html>

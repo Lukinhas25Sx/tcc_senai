@@ -1,0 +1,106 @@
+/* reservas.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    color: #333;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espaço entre os cartões */
+}
+
+.card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: calc(33.333% - 20px); /* Três cartões por linha, considerando o espaço */
+    box-sizing: border-box; /* Inclui padding e bordas no cálculo da largura */
+}
+
+.card h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.card p {
+    margin: 5px 0;
+}
+
+.botao_link {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.botao_link:hover {
+    background-color: #0056b3;
+}
+
+input[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.btn {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 15px;
+    background-color: #007BFF; /* Cor do botão */
+    color: white;
+    text-decoration: none; /* Remove sublinhado */
+    border-radius: 5px;
+    border: none; /* Remove a borda padrão dos botões */
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Cor ao passar o mouse */
+}
+
+.button-group {
+    display: flex; /* Usar flexbox para alinhar os botões lado a lado */
+    gap: 10px; /* Espaço entre os botões */
+    margin-top: 10px; /* Margem acima dos botões */
+}
+
+.sala-options button {
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.sala-options button.active {
+    background-color: #0056b3;
+}
+.flatpickr-day.disabled {
+    background-color: #ffcccc !important; /* Dias indisponíveis em vermelho claro */
+    color: #b22222 !important;
+    cursor: not-allowed;
+}
+.flatpickr-day.weekend {
+    color: #808080; /* Fins de semana em cinza */
+}
