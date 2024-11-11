@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // Inclui a conexão com o banco de dados e a proteção de sessão
 include '../configurations/conection.php';
 include '../configurations/protect.php';
@@ -94,6 +95,7 @@ $datas_indisponiveis = [];
 while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
     $datas_indisponiveis[] = $row['data'];
 }
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>
@@ -105,7 +107,7 @@ while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-<body>
+<body class="with-header" style="padding-top: 60px;">
     <h2>Criar Reserva</h2>
     <form method="POST" onsubmit="return validarFormulario()">
         <input type="hidden" name="usuario" value="<?php echo $_SESSION['id']; ?>"> <!-- Adiciona o campo 'usuario' como hidden -->

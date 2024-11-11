@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include '../configurations/conection.php';
 include '../configurations/header.php'; // header.php deve iniciar a sessão
 
@@ -62,6 +63,7 @@ if (isset($_POST['excluir'])) {
     header("Location: " . $_SERVER['PHP_SELF']);
     exit();
 }
+ob_end_flush();
 ?>
 
 
@@ -73,7 +75,7 @@ if (isset($_POST['excluir'])) {
     <link rel="stylesheet" href="style.css">
     <title>Reservas</title>
 </head>
-<body>
+<body class="with-header" style="padding-top: 60px;">
     <h1>Reservas Confirmadas</h1>
     <div class="container">
         <?php if (empty($reservas_confirmadas)): ?>
@@ -123,8 +125,7 @@ if (isset($_POST['excluir'])) {
         <?php endif; ?>
     </div>
 
-    <!-- Botão para criar nova reserva -->
-    <a href="criar_reserva.php">Criar Nova Reserva</a>
-    <a href="../ProfArea/profarea.php">Sair</a>
+    <a href="criar_reserva.php" class="botao_link">Criar Nova Reserva</a>
+    <a href="../ProfArea/profarea.php" class="botao_link">Sair</a>
 </body>
 </html>

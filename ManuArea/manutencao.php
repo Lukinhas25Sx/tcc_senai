@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_reserva'])) 
     <link rel="stylesheet" href="manutencao.css">
     <title>Área de Manutenção</title>
 </head>
-<body>
+<body class="with-header" style="padding-top: 60px;">
     <h1>Mensagens Recebidas</h1>
     <?php if (count($mensagens) > 0): ?>
         <ul>
@@ -116,7 +116,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_reserva'])) 
     <?php else: ?>
         <p>Não há reservas pendentes.</p>
     <?php endif; ?>
-
-    <p>Bem-vindo, <?php echo htmlspecialchars($_SESSION['nome']); ?></p>
 </body>
 </html>

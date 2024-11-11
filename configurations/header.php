@@ -23,63 +23,101 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
     <title>Página com Topo</title>
     <link rel="stylesheet" href="header.css">
     <style>
-        /* Estilo da barra superior */
-        /* Estilo da barra superior */
-    .top-bar {
-        width: 100%;
-        background-color: #002366; /* Azul escuro */
-        padding: 5px 20px;
-        color: white;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 60px; /* Ajusta a altura da barra superior */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
+        /* Estilos da barra superior isolados com ID */
+        #top-bar {
+            width: 100%;
+            background-color: #002366;
+            padding: 5px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between; /* Modificado para distribuir o conteúdo */
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 60px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
 
-    /* Estilo do container de informações do usuário */
-    .user-info {
-        display: flex;
-        align-items: center;
-    }
+        /* Ajusta o padding-top apenas quando o body tem a classe 'with-header' */
+        body.with-header {
+            padding-top: 60px;
+        }
 
-    /* Estilo da imagem de perfil */
-    .profile-pic {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%; /* Forma redonda */
-        margin-right: 10px;
-        object-fit: cover; /* Garante que a imagem se ajuste ao container */
-        border: 2px solid white; /* Contorno branco */
-    }
+        /* Estilo do link do usuário */
+        #top-bar .user-info {
+            display: flex;
+            align-items: center;
+            max-width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
 
-    /* Estilo do nome do usuário */
-    .username {
-        font-size: 1rem;
-        color: white;
-        font-weight: bold;
-    }
+        #top-bar .user-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit; /* Garante que herda a cor branca */
+        }
 
-    /* Adiciona espaço para o conteúdo abaixo da barra superior fixa */
-    body {
-        margin-top: 60px;
-    }
+        #top-bar .user-link:hover {
+            text-decoration: underline; /* Efeito de hover apenas para a barra superior */
+        }
+
+        /* Estilo da imagem de perfil */
+        #top-bar .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        /* Estilo do nome do usuário */
+        #top-bar .username {
+            font-size: 1rem;
+            color: white;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+            margin-right: 40px;
+        }
+
+        /* Estilo do botão de logout */
+        #top-bar .logout-btn {
+            background-color: #cc0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none; /* Para garantir que o botão não tenha sublinhado */
+        }
+
+        #top-bar .logout-btn:hover {
+            background-color: #a80000; /* Efeito de hover */
+        }
 
     </style>
 </head>
 <body>
-    <div class="top-bar">
+    <div id="top-bar">
+        <!-- Botão de logout no lado esquerdo -->
+        <a href="../configurations/logout.php" class="logout-btn">Logout</a>
+
+        <!-- Informações do usuário no lado direito -->
         <div class="user-info">
-            <?php if (!empty($user['foto_perfil'])) : ?>
-                <img src="data:image/jpeg;base64,<?php echo base64_encode($user['foto_perfil']); ?>" alt="Foto de perfil" class="profile-pic">
-            <?php endif; ?>
-            <span class="username"><?php echo htmlspecialchars($user['nome']); ?></span>
+            <a href="../configurations/perfil.php" class="user-link">
+                <?php if (!empty($user['foto_perfil'])) : ?>
+                    <img src="data:image/jpeg;base64,<?php echo base64_encode($user['foto_perfil']); ?>" alt="Foto de perfil" class="profile-pic">
+                <?php endif; ?>
+                <span class="username"><?php echo htmlspecialchars($user['nome']); ?></span>
+            </a>
         </div>
     </div>
 </body>
 </html>
-

@@ -1,10 +1,15 @@
-<?php 
+<?php
+// Inicia a sessão
+session_start();
 
-if(!isset($_SESSION)){
-    session_start();
-}
+// Limpa todas as variáveis de sessão
+$_SESSION = [];
 
+// Destroi a sessão
 session_destroy();
 
-header('../cadastro/index.php')
+// Define o URL de redirecionamento para a página de login
+define('BASE_URL', '/tcc_senai/');
+header("Location: " . BASE_URL . "cadastro/index.php");
+exit();
 ?>

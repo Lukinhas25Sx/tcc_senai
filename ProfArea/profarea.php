@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // Inclua o arquivo de configuração com a conexão ao banco de dados
 include '../configurations/conection.php'; // Altere o caminho conforme necessário
 include '../configurations/header.php'; // header.php deve iniciar a sessão
@@ -95,6 +96,7 @@ $query = "
 $stmt = $pdo->prepare($query);
 $stmt->execute(['remetente_id' => $_SESSION['id']]);
 $mensagens_enviadas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Usando FETCH_ASSOC para garantir que recebemos um array associativo
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +113,7 @@ $mensagens_enviadas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Usando FETCH_ASSOC p
         }
     </script>
 </head>
-<body>
+<body class="with-header" style="padding-top: 60px;">
     <h1>Enviar Mensagem</h1>
     <form action="profarea.php" method="POST" id="message-form" onsubmit="disableSubmit();">
         <input type="hidden" name="action" value="send"> <!-- Adiciona um campo de ação -->
@@ -191,7 +193,5 @@ $mensagens_enviadas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Usando FETCH_ASSOC p
 
     <!-- Botão para fazer reserva -->
     <a href="../reservas/reservas.php" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
-    <a href="logout.php">Sair</a>
-    <a href="../configurations/perfil.php">Perfil</a>
 </body>
 </html>
