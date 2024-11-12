@@ -6,24 +6,24 @@ body {
     background-color: #f4f4f4;
 }
 
-h1 {
+h1, h2 {
     color: #333;
+    margin-bottom: 20px;
 }
 
 .container {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Espaço entre os cartões */
+    gap: 20px;
 }
 
 .card {
     background: white;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    width: calc(33.333% - 20px); /* Três cartões por linha, considerando o espaço */
-    box-sizing: border-box; /* Inclui padding e bordas no cálculo da largura */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: calc(33.333% - 20px);
 }
 
 .card h2 {
@@ -38,69 +38,157 @@ h1 {
 .botao_link {
     display: inline-block;
     margin: 10px 0;
-    padding: 10px 15px;
-    background-color: #007BFF;
+    padding: 10px 20px;
+    background-color: #4CAF50;
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    font-weight: bold;
 }
 
 .botao_link:hover {
-    background-color: #0056b3;
+    background-color: #45A049;
 }
 
-input[type="submit"] {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-input[type="submit"]:hover {
-    background-color: #218838;
-}
-
+input[type="submit"],
 .btn {
     display: inline-block;
     margin: 10px 0;
-    padding: 10px 15px;
-    background-color: #007BFF; /* Cor do botão */
+    padding: 12px 20px;
+    background-color: #007BFF;
     color: white;
-    text-decoration: none; /* Remove sublinhado */
+    border: none;
     border-radius: 5px;
-    border: none; /* Remove a borda padrão dos botões */
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
+input[type="submit"]:hover,
 .btn:hover {
-    background-color: #0056b3; /* Cor ao passar o mouse */
+    background-color: #0056b3;
 }
 
 .button-group {
-    display: flex; /* Usar flexbox para alinhar os botões lado a lado */
-    gap: 10px; /* Espaço entre os botões */
-    margin-top: 10px; /* Margem acima dos botões */
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .sala-options button {
     margin: 5px;
-    padding: 10px;
+    padding: 12px 20px;
     border: none;
     background-color: #007bff;
     color: white;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
+
+.sala-options button:hover {
+    background-color: #0056b3;
+}
+
 .sala-options button.active {
     background-color: #0056b3;
 }
-.flatpickr-day.disabled {
-    background-color: #ffcccc !important; /* Dias indisponíveis em vermelho claro */
-    color: #b22222 !important;
-    cursor: not-allowed;
+
+/* Escalando o calendário com transform para aumentar o tamanho total */
+.flatpickr-calendar {
+    transform: scale(1.5); /* Aumenta o tamanho geral para 150% */
+    transform-origin: top left; /* Origem de transformação para evitar recortes indesejados */
 }
-.flatpickr-day.weekend {
-    color: #808080; /* Fins de semana em cinza */
+
+/* Ajustando espaçamento e dimensões dos elementos internos para acompanhar o aumento */
+.flatpickr-day, .flatpickr-day.today {
+    width: 45px; /* Aumenta a largura de cada célula do dia */
+    height: 45px; /* Aumenta a altura de cada célula do dia */
+    line-height: 45px;
+}
+
+.flatpickr-month {
+    font-size: 20px; /* Tamanho da fonte do mês e ano */
+}
+
+.flatpickr-prev-month, .flatpickr-next-month {
+    font-size: 20px; /* Tamanho das setas de navegação */
+    width: 35px; 
+    height: 35px;
+    line-height: 35px;
+}
+
+.flatpickr-weekday {
+    font-size: 18px; /* Tamanho da fonte para os dias da semana */
+    padding: 10px 0;
+}
+
+.flatpickr-time input[type="number"] {
+    font-size: 18px; /* Fonte dos campos de horas e minutos */
+    width: 60px; /* Largura dos campos de tempo */
+}
+
+
+.container_calendario {
+    display: flex;
+    margin-top: 20px;
+}
+
+#dataContainer {
+    width: 465px;
+    height: 450px;
+}
+
+.informacoes {
+    margin-top: 20px;
+    margin-left: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"], textarea, select {
+    padding: 10px;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"].codigo {
+    max-width: 500px; /* Aumenta o comprimento do campo de código */
+}
+
+input[type="text"]:focus, 
+textarea:focus, 
+select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+textarea {
+    resize: vertical;
+}
+
+.criar {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.criar:hover {
+    background-color: #45A049;
 }

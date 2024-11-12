@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario = $_POST['usuario']; // Novo campo 'usuario'
     $sala = $_POST['sala'];
     $data = $_POST['data'];
-    $horario_inicio = $_POST['horario_inicio'];
-    $horario_fim = $_POST['horario_fim'];
+    $horario_inicio = $_POST['horario_inicio'] ?? '';
+    $horario_fim = $_POST['horario_fim'] ?? '';    
     $motivo = $_POST['motivo'];
     $manutencao_id = $_POST['manutencao_id'];
 
@@ -107,7 +107,7 @@ ob_end_flush();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
-<body class="with-header" style="padding-top: 60px;">
+<body class="with-header" style="padding-top: 70px;">
     <h2>Criar Reserva</h2>
     <form method="POST" onsubmit="return validarFormulario()">
         <input type="hidden" name="usuario" value="<?php echo $_SESSION['id']; ?>"> <!-- Adiciona o campo 'usuario' como hidden -->
@@ -118,33 +118,55 @@ ob_end_flush();
             <button type="button" onclick="selectSala('Laboratorio de Quimica')">Laboratório de Química</button>
             <button type="button" onclick="selectSala('Lego')">Lego</button>
         </div>
+
         <input type="hidden" name="sala" id="sala" required>
 
-        <label for="data"></label>
-        <input type="text" name="data" id="data" required style="display: none;">
-        <div id="dataContainer"></div>
+        <div class="container_calendario">
+            <label for="data"></label>
+            <input type="text" name="data" id="data" required style="display: none;">
+            <div id="dataContainer"></div>
 
-        <label for="horario_inicio">Horário de Início:</label>
-        <input type="text" name="horario_inicio" id="horario_inicio" placeholder="Selecione o horário de início" required>
+            <div class="informacoes">
+                <label for="motivo">Motivo:</label>
+                <input type="text" name="motivo" id="motivo" placeholder="Informe o motivo da reserva">
 
-        <label for="horario_fim">Horário de Fim:</label>
-        <input type="text" name="horario_fim" id="horario_fim" placeholder="Selecione o horário de fim" required>
+                <label for="horario_inicio">Horário de Início:</label>
+                <input type="text" name="horario_inicio" id="horario_inicio" placeholder="Selecione o horário de início">
 
-        <label for="motivo">Motivo:</label>
-        <textarea name="motivo" id="motivo" required></textarea>
+                <label for="horario_fim">Horário de Fim:</label>
+                <input type="text" name="horario_fim" id="horario_fim" placeholder="Selecione o horário de fim">
 
-        <label for="manutencao_id">Enviar para Manutenção:</label>
-        <select name="manutencao_id" id="manutencao_id" required>
-            <option value="">Selecione</option>
-            <?php while ($row = $result_manutencao->fetch(PDO::FETCH_ASSOC)) { ?>
-                <option value="<?php echo htmlspecialchars($row['id']); ?>"><?php echo htmlspecialchars($row['nome']); ?></option>
-            <?php } ?>
-        </select>
+                <label for="manutencao_id">Usuario do Responsável pela Manutenção:</label>
+                <select name="manutencao_id" id="manutencao_id" required>
+                <option value="" disabled selected>Selecione o user</option>
+                    <?php while ($row = $result_manutencao->fetch(PDO::FETCH_ASSOC)) { ?>
+                        <option value="<?php echo htmlspecialchars($row['id']); ?>"><?php echo htmlspecialchars($row['nome']); ?></option>
+                    <?php } ?>
+                </select>
 
-        <button type="submit">Criar Reserva</button>
+                <button type="submit" class="criar">Criar Reserva</button>
+        </div>
+       </div>
     </form>
 
     <script>
+
+
+        document.querySelector('form').onsubmit = function(event) {
+            const horarioInicio = document.getElementById('horario_inicio').value;
+            const horarioFim = document.getElementById('horario_fim').value;
+
+            console.log("Horário de Início:", horarioInicio);
+            console.log("Horário de Fim:", horarioFim);
+
+            if (!horarioInicio || !horarioFim) {
+                alert("Por favor, selecione os horários de início e fim.");
+                event.preventDefault();
+                return false;
+            }
+        };
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
 
@@ -193,15 +215,16 @@ ob_end_flush();
                 return false;
             }
 
+            if (!horarioInicio) {
+                alert("Por favor, selecione o horário de início.");
+                return false;
+            }
+
             if (!horarioFim) {
                 alert("Por favor, selecione o horário de fim.");
                 return false;
             }
 
-            if (!motivo) {
-                alert("Por favor, informe o motivo da reserva.");
-                return false;
-            }
 
             return true;
         }
