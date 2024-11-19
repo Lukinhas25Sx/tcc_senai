@@ -22,7 +22,6 @@ if ($cargo === 'Manutenção') {
     die("Usuários de manutenção não têm permissão para criar reservas.");
 }
 
-
 // Busca os usuários de manutenção para selecionar na reserva
 $query_manutencao = "SELECT id, nome FROM users WHERE cargo = 'Manutenção'";
 $result_manutencao = $pdo->query($query_manutencao);
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $sala = $_POST['sala'];
     $data = $_POST['data'];
     $horario_inicio = $_POST['horario_inicio'] ?? '';
-    $horario_fim = $_POST['horario_fim'] ?? '';    
+    $horario_fim = $_POST['horario_fim'] ?? '';
     $motivo = $_POST['motivo'];
     $manutencao_id = $_POST['manutencao_id'];
 
@@ -95,8 +94,20 @@ $datas_indisponiveis = [];
 while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
     $datas_indisponiveis[] = $row['data'];
 }
+
+// Busca reservas confirmadas para exibição
+$query_reservas_confirmadas = "
+    SELECT r.data, r.horario_inicio, r.horario_fim, u.nome AS usuario
+    FROM reservas r
+    JOIN users u ON r.usuario_id = u.id
+    WHERE r.status = 'confirmado'
+    ORDER BY r.data, r.horario_inicio
+";
+$result_reservas_confirmadas = $pdo->query($query_reservas_confirmadas);
+
 ob_end_flush();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -147,6 +158,19 @@ ob_end_flush();
                 <button type="submit" class="criar">Criar Reserva</button>
         </div>
        </div>
+       <div class="reservas-confirmadas">
+    <h3>Reservas Confirmadas</h3>
+    <ul>
+        <?php while ($reserva = $result_reservas_confirmadas->fetch(PDO::FETCH_ASSOC)) { ?>
+            <li>
+                <strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario']); ?><br>
+                <strong>Data:</strong> <?php echo htmlspecialchars($reserva['data']); ?><br>
+                <strong>Horário:</strong> <?php echo htmlspecialchars($reserva['horario_inicio']) . " - " . htmlspecialchars($reserva['horario_fim']); ?>
+            </li>
+        <?php } ?>
+    </ul>
+</div>
+
     </form>
 
     <script>
