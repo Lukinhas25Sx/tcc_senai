@@ -9,6 +9,18 @@ h1, h2 {
 
 .messages-section {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.messages-section-esquerda {
+    width: 45%; /* largura */
+    padding: 20px;
+}
+
+.messages-section-direita {
+    width: 45%; /* largura */
+    padding: 20px;
 }
 
 .card {
@@ -22,6 +34,9 @@ h1, h2 {
     max-height: 260px; /* Limita a altura máxima do card */
     max-width: 300px; /* Aumenta a largura do card */
     overflow-y: auto; /* Adiciona rolagem se necessário */
+    height: 220px;
+    width: 300px;
+    overflow-wrap: break-word; /* Quebra palavras longas */
 }
 
 .card strong, .card p {
