@@ -75,7 +75,7 @@ ob_end_flush();
     <link rel="stylesheet" href="style.css">
     <title>Reservas</title>
 </head>
-<body class="with-header" style="padding-top: 60px;">
+<body class="with-header" style="padding-top: 70px;">
     <h1>Reservas Confirmadas</h1>
     <div class="container">
         <?php if (empty($reservas_confirmadas)): ?>
