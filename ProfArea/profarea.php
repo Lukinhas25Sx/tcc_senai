@@ -139,9 +139,13 @@ ob_end_flush();
         <p style="color: red;"><?php echo $error_message; ?></p>
     <?php endif; ?>
 
-    <!-- Seção de Mensagens Confirmadas -->
     <div class="messages-section">
-        <h2>Mensagens Confirmadas</h2>
+        
+    
+    <!-- Seção de Mensagens Confirmadas (esquerda) -->
+
+    <div class="messages-section-esquerda">
+        <h2>Mensagens Confirmadas:</h2>
         <ul>
             <?php foreach ($mensagens_enviadas as $mensagem): ?>
                 <?php if ($mensagem['confirmada']): ?>
@@ -162,9 +166,10 @@ ob_end_flush();
         </ul>
     </div>
 
-    <!-- Seção de Mensagens Não Confirmadas -->
-    <div class="messages-section">
-        <h2>Mensagens Não Confirmadas</h2>
+    <!-- Seção de Mensagens Não Confirmadas (Direita) -->
+
+    <div class="messages-section-direita">
+        <h2>Mensagens Não Confirmadas:</h2>
         <ul>
             <?php foreach ($mensagens_enviadas as $mensagem): ?>
                 <?php if (!$mensagem['confirmada']): ?>
@@ -176,7 +181,11 @@ ob_end_flush();
                             <form action="profarea.php" method="POST" style="display:inline;">
                                 <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
                                 <input type="hidden" name="action" value="edit">
+
+                                <div class="textarea">
                                 <textarea name="mensagem" rows="2" required><?php echo htmlspecialchars($mensagem['mensagem']); ?></textarea>
+                                </div>
+
                                 <input type="submit" value="Editar">
                             </form>
                             <form action="profarea.php" method="POST" style="display:inline;">
@@ -190,7 +199,7 @@ ob_end_flush();
             <?php endforeach; ?>
         </ul>
     </div>
-
+    </div>
     <!-- Botão para fazer reserva -->
     <a href="../reservas/reservas.php" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
 </body>
