@@ -55,7 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $deleteStmt->execute(['mensagem_id' => $mensagem_id]);
-            $success_message = "Mensagem excluída com sucesso!";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         } catch (PDOException $e) {
             $error_message = "Erro ao excluir a mensagem: " . $e->getMessage();
         }
@@ -71,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $updateStmt->execute(['mensagem' => $mensagem_nova, 'mensagem_id' => $mensagem_id]);
-            $success_message = "Mensagem editada com sucesso!";
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit;
         } catch (PDOException $e) {
             $error_message = "Erro ao editar a mensagem: " . $e->getMessage();
         }
@@ -104,16 +106,197 @@ ob_end_flush();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="profarea.css">
     <title>Área do Professor</title>
     <script>
+        if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         function disableSubmit() {
             document.getElementById("submit-button").disabled = true;
             document.getElementById("message-form").submit(); // Envia o formulário
         }
+    function toggleEditForm(mensagemId) {
+        var form = document.getElementById('form-edit-' + mensagemId);
+        var editButton = document.getElementById('edit-button-' + mensagemId);
+        
+        // Alterna a visibilidade do formulário
+        if (form.style.display === "none") {
+            form.style.display = "block";
+            editButton.textContent = "Cancelar";
+        } else {
+            form.style.display = "none";
+            editButton.textContent = "Editar";
+        }
+    }
+
     </script>
+    <style>
+
+        html body.with-header{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #ececec !important;
+            padding-top: 100px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+        /* Estilo geral para a div de mensagens */
+        .mensagens {
+            background-color: #fff !important;
+            border-radius: 10px;
+            max-width: 960px; /* Largura máxima para a div de mensagens */
+            margin: 0 auto; /* Centraliza a div de mensagens */
+            padding: 20px;
+            box-sizing: border-box; /* Inclui padding no cálculo da largura */
+        }
+
+        /* Layout da seção de mensagens */
+        .messages-section {
+            display: flex;
+            gap: 20px; /* Espaço entre os elementos */
+            flex-wrap: wrap; /* Permite que os cards quebrem para a linha seguinte se necessário */
+            width: 100%; /* Ocupará toda a largura da div mensagens */
+            box-sizing: border-box;
+        }
+
+        /* Estilo para as colunas esquerda e direita */
+        .messages-section-esquerda, .messages-section-direita {
+            width: calc(50% - 10px); /* Divide igualmente, com um pequeno espaço entre */
+            box-sizing: border-box; /* Inclui padding e margens no cálculo da largura */
+            padding: 20px;
+        }
+
+        /* Estilo dos cards dentro das seções */
+        .card {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            width: 100%; /* Garante que o card ocupe toda a largura da sua seção */
+            max-height: 260px;
+            overflow-y: auto;
+            overflow-wrap: break-word;
+            box-sizing: border-box; /* Garante que padding e borda não aumentem o tamanho da div */
+        }
+
+        /* Responsividade para telas menores (mobile) */
+        @media (max-width: 768px) {
+        .messages-section-esquerda, .messages-section-direita {
+            width: 100%; /* Em telas pequenas, as colunas se tornam full width */
+            gap: 10px; /* Menor espaço entre as colunas em telas pequenas */
+            }
+        }
+
+
+
+        .card strong, .card p {
+            overflow-wrap: break-word; /* Quebra palavras longas */
+            word-break: break-all; /* Quebra qualquer palavra que ultrapasse o limite */
+            display: block; /* Garante que as quebras de linha funcionem */
+        }
+
+        .action-buttons {
+            margin-top: 10px; /* Espaço acima dos botões de ação */
+        }
+
+        form {
+            display: inline; /* Permite que os formulários sejam exibidos em linha */
+        }
+
+        #edit-button {
+            background-color: #28a745; /* Cor verde para botões */
+            color: white; /* Texto branco para os botões */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        #edit-button:hover {
+            background-color: #218838; /* Cor mais escura ao passar o mouse */
+        }
+
+        input[type="submit"] {
+            background-color: #28a745; /* Cor verde para botões */
+            color: white; /* Texto branco para os botões */
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838; /* Cor mais escura ao passar o mouse */
+        }
+
+        label {
+            display: block; /* Garante que cada rótulo ocupe uma linha */
+            margin-top: 10px; /* Espaço acima dos rótulos */
+        }
+
+        textarea {
+            width: 100%; /* Garante que o textarea ocupe toda a largura disponível */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            resize: vertical;
+            font-size: 14px;
+            box-sizing: border-box; /* Evita que o padding e borda façam o textarea vazar */
+        }
+
+
+        textarea:focus {
+            border-color: #80bdff; /* Borda azul ao focar no textarea */
+            outline: none; /* Remove o contorno padrão */
+        }
+
+        p {
+            margin-top: 10px; /* Espaço acima de mensagens de sucesso ou erro */
+        }
+        /* Estilo do select */
+        select {
+            width: 100%; /* Garante que o select ocupe toda a largura disponível */
+            padding: 10px; /* Espaçamento interno para tornar o campo mais legível */
+            font-size: 14px; /* Tamanho da fonte para tornar o texto legível */
+            border-radius: 5px; /* Bordas arredondadas */
+            border: 1px solid #ccc; /* Borda cinza suave */
+            background-color: #f9f9f9; /* Fundo leve e neutro */
+            box-sizing: border-box; /* Inclui o padding e a borda no tamanho total do select */
+            transition: border-color 0.3s ease, background-color 0.3s ease; /* Transição suave */
+        }
+
+        /* Estilo do select ao focar */
+        select:focus {
+            border-color: #007bff; /* Cor da borda azul ao focar */
+            outline: none; /* Remove o contorno padrão */
+            background-color: #e9f7ff; /* Fundo leve azul ao focar */
+        }
+
+        /* Estilo das opções do select */
+        option {
+            padding: 10px; /* Espaçamento interno das opções */
+            background-color: #fff; /* Fundo branco das opções */
+            color: #333; /* Cor do texto das opções */
+        }
+
+        /* Estilo do select ao passar o mouse */
+        select:hover {
+            border-color: #80bdff; /* Cor de borda mais clara ao passar o mouse */
+        }
+        ul{
+            padding: 0;
+        }
+
+    </style>
 </head>
-<body class="with-header" style="padding-top: 60px;">
+<body class="with-header">
+    <div class="mensagens">
     <h1>Enviar Mensagem</h1>
     <form action="profarea.php" method="POST" id="message-form" onsubmit="disableSubmit();">
         <input type="hidden" name="action" value="send"> <!-- Adiciona um campo de ação -->
@@ -138,7 +321,7 @@ ob_end_flush();
     <?php if (isset($error_message)): ?>
         <p style="color: red;"><?php echo $error_message; ?></p>
     <?php endif; ?>
-
+    </div>
     <div class="messages-section">
         
     
@@ -171,36 +354,41 @@ ob_end_flush();
     <div class="messages-section-direita">
         <h2>Mensagens Não Confirmadas:</h2>
         <ul>
-            <?php foreach ($mensagens_enviadas as $mensagem): ?>
-                <?php if (!$mensagem['confirmada']): ?>
-                    <li class="card">
-                        <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
-                        <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
-                        <strong>Status:</strong> Não Confirmada
-                        <div class="action-buttons">
-                            <form action="profarea.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
-                                <input type="hidden" name="action" value="edit">
+    <?php foreach ($mensagens_enviadas as $mensagem): ?>
+        <?php if (!$mensagem['confirmada']): ?>
+            <li class="card">
+                <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
+                <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
+                <strong>Status:</strong> Não Confirmada
+                <div class="action-buttons">
+                    <!-- Botão de editar -->
+                    <button type="button" id="edit-button-<?php echo $mensagem['id']; ?>" onclick="toggleEditForm(<?php echo $mensagem['id']; ?>)">Editar</button>
+                    
+                    <!-- Formulário de edição oculto inicialmente -->
+                    <form action="profarea.php" method="POST" style="display:none;" id="form-edit-<?php echo $mensagem['id']; ?>">
+                        <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
+                        <input type="hidden" name="action" value="edit">
 
-                                <div class="textarea">
-                                <textarea name="mensagem" rows="2" required><?php echo htmlspecialchars($mensagem['mensagem']); ?></textarea>
-                                </div>
-
-                                <input type="submit" value="Editar">
-                            </form>
-                            <form action="profarea.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
-                            </form>
+                        <div class="textarea">
+                            <textarea name="mensagem" rows="2" required><?php echo htmlspecialchars($mensagem['mensagem']); ?></textarea>
                         </div>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
+
+                        <input type="submit" value="Salvar">
+                    </form>
+
+                    <!-- Formulário de exclusão -->
+                    <form action="profarea.php" method="POST" style="display:inline;">
+                        <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
+                    </form>
+                </div>
+            </li>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</ul>
+
     </div>
     </div>
-    <!-- Botão para fazer reserva -->
-    <a href="../reservas/reservas.php" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
 </body>
 </html>

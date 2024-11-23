@@ -194,8 +194,8 @@ textarea {
 }
 .reservas-confirmadas {
     position: fixed;
-    top: 70px; /* Ajuste conforme a altura do cabeçalho */
-    right: 20px;
+    top: 120px; /* Ajuste conforme a altura do cabeçalho */
+    right: 70px;
     width: 250px;
     background-color: #f9f9f9;
     border: 1px solid #ccc;

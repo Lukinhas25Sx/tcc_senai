@@ -21,7 +21,6 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Página com Topo</title>
-    <link rel="stylesheet" href="header.css">
     <style>
         /* Estilos da barra superior isolados com ID */
         #top-bar {
@@ -101,13 +100,30 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
         #top-bar .logout-btn:hover {
             background-color: #a80000; /* Efeito de hover */
         }
-
+        .inicial{
+            display: block;
+            font-size: 2em;
+            margin-block-start: 0.67em;
+            margin-block-end: 0.67em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            font-weight: bold;
+            unicode-bidi: isolate;
+            color: inherit; /* Remove a cor azul */
+            text-decoration: none; /* Remove o sublinhado */
+        }
     </style>
 </head>
 <body>
     <div id="top-bar">
         <!-- Botão de logout no lado esquerdo -->
-        <a href="../configurations/logout.php" class="logout-btn">Logout</a>
+         <div class="logoutereserva">
+         <a href="../configurations/logout.php" class="logout-btn">Sair</a>
+         <a href="../reservas/reservas.php" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
+
+         </div>
+
+         <a href="../ProfArea/profarea.php" class="inicial">Edu Organiza</a>
 
         <!-- Informações do usuário no lado direito -->
         <div class="user-info">

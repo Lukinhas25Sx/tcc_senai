@@ -97,7 +97,7 @@ while ($row = $result_datas_indisponiveis->fetch(PDO::FETCH_ASSOC)) {
 
 // Busca reservas confirmadas para exibição
 $query_reservas_confirmadas = "
-    SELECT r.data, r.horario_inicio, r.horario_fim, u.nome AS usuario
+    SELECT r.data, r.horario_inicio, r.horario_fim, r.sala, u.nome AS usuario
     FROM reservas r
     JOIN users u ON r.usuario_id = u.id
     WHERE r.status = 'confirmado'
@@ -161,13 +161,18 @@ ob_end_flush();
        <div class="reservas-confirmadas">
     <h3>Reservas Confirmadas</h3>
     <ul>
-        <?php while ($reserva = $result_reservas_confirmadas->fetch(PDO::FETCH_ASSOC)) { ?>
-            <li>
-                <strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario']); ?><br>
-                <strong>Data:</strong> <?php echo htmlspecialchars($reserva['data']); ?><br>
-                <strong>Horário:</strong> <?php echo htmlspecialchars($reserva['horario_inicio']) . " - " . htmlspecialchars($reserva['horario_fim']); ?>
-            </li>
-        <?php } ?>
+    <?php while ($reserva = $result_reservas_confirmadas->fetch(PDO::FETCH_ASSOC)) { 
+        // Formata a data e hora
+        $data_formatada = DateTime::createFromFormat('Y-m-d', $reserva['data'])->format('d/m/Y');
+        $horario_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_inicio'])->format('H:i');
+        $horario_fim_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_fim'])->format('H:i');
+    ?>
+        <li>
+        <strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario']); ?><br>
+        <strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?><br>
+        <strong>Data:</strong> <?php echo $data_formatada . " às " . $horario_formatado . " - " . $horario_fim_formatado; ?><br>
+    </li>
+<?php } ?>
     </ul>
 </div>
 
