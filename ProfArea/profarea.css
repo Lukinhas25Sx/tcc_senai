@@ -1,0 +1,93 @@
+html body.with-header{
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #ff0101 !important;
+
+}
+
+h1, h2 {
+    color: #333;
+}
+.mensagens{
+    background-color: #ececec !important;
+}
+
+.messages-section {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 90%;
+    background-color: #fff;
+}
+
+.messages-section-esquerda .messages-section-direita {
+    width: 45%; /* largura */
+    padding: 20px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    max-height: 260px; /* Limita a altura máxima do card */
+    max-width: 300px; /* Aumenta a largura do card */
+    overflow-y: auto; /* Adiciona rolagem se necessário */
+    height: 220px;
+    width: 300px;
+    overflow-wrap: break-word; /* Quebra palavras longas */
+}
+
+.card strong, .card p {
+    overflow-wrap: break-word; /* Quebra palavras longas */
+    word-break: break-all; /* Quebra qualquer palavra que ultrapasse o limite */
+    display: block; /* Garante que as quebras de linha funcionem */
+}
+
+.action-buttons {
+    margin-top: 10px; /* Espaço acima dos botões de ação */
+}
+
+form {
+    display: inline; /* Permite que os formulários sejam exibidos em linha */
+}
+
+input[type="submit"] {
+    background-color: #28a745; /* Cor verde para botões */
+    color: white; /* Texto branco para os botões */
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #218838; /* Cor mais escura ao passar o mouse */
+}
+
+label {
+    display: block; /* Garante que cada rótulo ocupe uma linha */
+    margin-top: 10px; /* Espaço acima dos rótulos */
+}
+
+textarea {
+    width: 100%; /* Largura total do textarea */
+    padding: 10px; /* Espaçamento interno do textarea */
+    border-radius: 5px; /* Bordas arredondadas */
+    border: 1px solid #ccc; /* Borda cinza */
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+textarea:focus {
+    border-color: #80bdff; /* Borda azul ao focar no textarea */
+    outline: none; /* Remove o contorno padrão */
+}
+
+p {
+    margin-top: 10px; /* Espaço acima de mensagens de sucesso ou erro */
+}
