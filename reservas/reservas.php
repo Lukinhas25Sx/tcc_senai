@@ -90,6 +90,12 @@ ob_end_flush();
                     <p><strong>Horário:</strong> <?php echo formatarHora($reserva['horario_inicio']) . ' ~ ' . formatarHora($reserva['horario_fim']); ?></p>
                     <p><strong>Motivo:</strong> <?php echo nl2br(htmlspecialchars($reserva['motivo'])); ?></p>
                     <p><strong>Status:</strong> <?php echo htmlspecialchars($reserva['status']); ?></p>
+                    <div class="button-group">
+                        <form method="post">
+                            <input type="hidden" name="reserva_id" value="<?php echo htmlspecialchars($reserva['id']); ?>">
+                            <input type="submit" name="excluir" class="btn" value="Excluir" onclick="return confirm('Você tem certeza que deseja excluir esta reserva?');">
+                        </form>
+                    </div>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

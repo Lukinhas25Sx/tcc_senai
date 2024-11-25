@@ -292,7 +292,9 @@ ob_end_flush();
         ul{
             padding: 0;
         }
-
+        .mensagem-not{
+            padding-bottom: 10px;
+        }
     </style>
 </head>
 <body class="with-header">
@@ -322,73 +324,66 @@ ob_end_flush();
         <p style="color: red;"><?php echo $error_message; ?></p>
     <?php endif; ?>
     </div>
-    <div class="messages-section">
-        
-    
-    <!-- Seção de Mensagens Confirmadas (esquerda) -->
-
+<div class="messages-section"> <!-- Seção de Mensagens Confirmadas (esquerda) -->
     <div class="messages-section-esquerda">
-        <h2>Mensagens Confirmadas:</h2>
-        <ul>
-            <?php foreach ($mensagens_enviadas as $mensagem): ?>
-                <?php if ($mensagem['confirmada']): ?>
-                    <li class="card">
-                        <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
-                        <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
-                        <strong>Status:</strong> Confirmada
-                        <div class="action-buttons">
-                            <form action="profarea.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
-                            </form>
-                        </div>
-                    </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-
+            <h2>Mensagens Confirmadas:</h2>
+            <ul>
+                <?php foreach ($mensagens_enviadas as $mensagem): ?>
+                    <?php if ($mensagem['confirmada']): ?>
+                        <li class="card">
+                            <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
+                            <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
+                            <strong>Status:</strong> Confirmada
+                            <div class="action-buttons">
+                                <form action="profarea.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
+                                </form>
+                            </div>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     <!-- Seção de Mensagens Não Confirmadas (Direita) -->
-
-    <div class="messages-section-direita">
-        <h2>Mensagens Não Confirmadas:</h2>
+<div class="messages-section-direita">
+    <h2>Mensagens Não Confirmadas:</h2>
         <ul>
-    <?php foreach ($mensagens_enviadas as $mensagem): ?>
-        <?php if (!$mensagem['confirmada']): ?>
-            <li class="card">
-                <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
-                <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
-                <strong>Status:</strong> Não Confirmada
-                <div class="action-buttons">
-                    <!-- Botão de editar -->
-                    <button type="button" id="edit-button-<?php echo $mensagem['id']; ?>" onclick="toggleEditForm(<?php echo $mensagem['id']; ?>)">Editar</button>
-                    
-                    <!-- Formulário de edição oculto inicialmente -->
-                    <form action="profarea.php" method="POST" style="display:none;" id="form-edit-<?php echo $mensagem['id']; ?>">
-                        <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
-                        <input type="hidden" name="action" value="edit">
+        <?php foreach ($mensagens_enviadas as $mensagem): ?>
+            <?php if (!$mensagem['confirmada']): ?>
+                <li class="card">
+                    <strong>Para:</strong> <?php echo htmlspecialchars($mensagem['destinatario_nome']); ?> <br>
+                    <strong>Mensagem:</strong> <?php echo nl2br(htmlspecialchars($mensagem['mensagem'])); ?> <br>
+                    <strong>Status:</strong> Não Confirmada
+                    <div class="action-buttons">
+                        <!-- Botão de editar -->
+                        <button type="button" id="edit-button-<?php echo $mensagem['id']; ?>" onclick="toggleEditForm(<?php echo $mensagem['id']; ?>)">Editar</button>
+                        
+                        <!-- Formulário de edição oculto inicialmente -->
+                        <form action="profarea.php" method="POST" style="display:none;" id="form-edit-<?php echo $mensagem['id']; ?>">
+                            <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
+                            <input type="hidden" name="action" class="mensagem-not" value="edit">
 
-                        <div class="textarea">
-                            <textarea name="mensagem" rows="2" required><?php echo htmlspecialchars($mensagem['mensagem']); ?></textarea>
-                        </div>
+                            <div class="textarea">
+                                <textarea name="mensagem" rows="2" required><?php echo htmlspecialchars($mensagem['mensagem']); ?></textarea>
+                            </div>
 
-                        <input type="submit" value="Salvar">
-                    </form>
+                            <input type="submit" value="Salvar">
+                        </form>
 
-                    <!-- Formulário de exclusão -->
-                    <form action="profarea.php" method="POST" style="display:inline;">
-                        <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="submit" value="Excluir" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
-                    </form>
-                </div>
-            </li>
-        <?php endif; ?>
-    <?php endforeach; ?>
-</ul>
-
-    </div>
-    </div>
+                        <!-- Formulário de exclusão -->
+                        <form action="profarea.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="mensagem_id" value="<?php echo htmlspecialchars($mensagem['id']); ?>">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="submit" value="Excluir" style="margin-top: 10px;" onclick="return confirm('Tem certeza que deseja excluir esta mensagem?');">
+                        </form>
+                    </div>
+                </li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </ul>
+</div>
+</div>
 </body>
 </html>

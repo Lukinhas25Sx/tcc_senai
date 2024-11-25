@@ -1,7 +1,7 @@
 <?php
 // Inclua o arquivo de configuração com a conexão ao banco de dados
 include '../configurations/conection.php';
-include '../configurations/header.php'; // header.php deve iniciar a sessão
+include '../configurations/header2.php'; // header.php deve iniciar a sessão
 
 // Verifica se o usuário está logado e se o cargo é 'Manutenção'
 if (!isset($_SESSION['id']) || $_SESSION['cargo'] !== 'Manutenção') {

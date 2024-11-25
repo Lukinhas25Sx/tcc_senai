@@ -111,7 +111,7 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
             unicode-bidi: isolate;
             color: inherit; /* Remove a cor azul */
             text-decoration: none; /* Remove o sublinhado */
-            margin-right: 80px;
+            margin-left: 36px;
             margin-top: 23px;
         }
     </style>
@@ -121,15 +121,13 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
         <!-- Botão de logout no lado esquerdo -->
          <div class="logoutereserva">
          <a href="../configurations/logout.php" class="logout-btn">Sair</a>
-         <a href="../reservas/reservas.php" style="padding: 10px; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
-
          </div>
 
-         <a href="../ProfArea/profarea.php" class="inicial">Edu Organiza</a>
+         <a href="../ManuArea/manutencao.php" class="inicial">Edu Organiza</a>
 
         <!-- Informações do usuário no lado direito -->
         <div class="user-info">
-            <a href="../configurations/perfil.php" class="user-link">
+            <a href="../configurations/perfil2.php" class="user-link">
                 <?php if (!empty($user['foto_perfil'])) : ?>
                     <img src="data:image/jpeg;base64,<?php echo base64_encode($user['foto_perfil']); ?>" alt="Foto de perfil" class="profile-pic">
                 <?php endif; ?>

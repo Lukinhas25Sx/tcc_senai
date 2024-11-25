@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $manutencao_id = $_POST['manutencao_id'];
 
     // Verificação de conflito de horário em reservas confirmadas
-    $query_verificacao = "
+        $query_verificacao = "
         SELECT * FROM reservas 
         WHERE data = :data 
         AND sala = :sala
@@ -49,16 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             OR (horario_inicio >= :horario_inicio AND horario_fim <= :horario_fim)
         ) 
         AND status = 'confirmado'
-    ";
-    $stmt = $pdo->prepare($query_verificacao);
-    $stmt->execute(['data' => $data, 'sala' => $sala, 'horario_inicio' => $horario_inicio, 'horario_fim' => $horario_fim]);
+        ";
+        $stmt = $pdo->prepare($query_verificacao);
+        $stmt->execute(['data' => $data, 'sala' => $sala, 'horario_inicio' => $horario_inicio, 'horario_fim' => $horario_fim]);
 
-    if ($stmt->rowCount() > 0) {
-        echo "Erro: Já existe uma reserva confirmada para o mesmo intervalo de horário nesta sala e dia.";
-    } else {
+        if ($stmt->rowCount() > 0) {
+        // Exibe a mensagem de erro via alert
+        echo "<script>alert('Erro: Já existe uma reserva confirmada para o mesmo intervalo de horário nesta sala e dia.');</script>";
+        } else {
         // Insere a reserva no banco de dados se não houver conflito
         $query = "INSERT INTO reservas (usuario, usuario_id, sala, data, horario_inicio, horario_fim, motivo, manutencao_id, status)
-                  VALUES (:usuario, :usuario_id, :sala, :data, :horario_inicio, :horario_fim, :motivo, :manutencao_id, 'pendente')";
+                VALUES (:usuario, :usuario_id, :sala, :data, :horario_inicio, :horario_fim, :motivo, :manutencao_id, 'pendente')";
 
         $stmt = $pdo->prepare($query);
         $params = [
@@ -80,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Erro ao criar reserva: " . $stmt->errorInfo()[2];
         }
     }
+
 }
 
 // Busca as datas e horários indisponíveis para o calendário
@@ -121,82 +123,99 @@ ob_end_flush();
 <body class="with-header" style="padding-top: 70px;">
     <h2>Criar Reserva</h2>
     <form method="POST" onsubmit="return validarFormulario()">
-        <input type="hidden" name="usuario" value="<?php echo $_SESSION['id']; ?>"> <!-- Adiciona o campo 'usuario' como hidden -->
-        <label>Sala:</label>
-        <div class="sala-options">
-            <button type="button" onclick="selectSala('Biblioteca')">Biblioteca</button>
-            <button type="button" onclick="selectSala('Informatica')">Informática</button>
-            <button type="button" onclick="selectSala('Laboratorio de Quimica')">Laboratório de Química</button>
-            <button type="button" onclick="selectSala('Lego')">Lego</button>
+    <input type="hidden" name="usuario" value="<?php echo $_SESSION['id']; ?>"> <!-- Adiciona o campo 'usuario' como hidden -->
+
+    <label>Sala:</label>
+    <div class="sala-options">
+        <button type="button" onclick="selectSala('Biblioteca')">Biblioteca</button>
+        <button type="button" onclick="selectSala('Informatica')">Informática</button>
+        <button type="button" onclick="selectSala('Laboratorio de Quimica')">Laboratório de Química</button>
+        <button type="button" onclick="selectSala('Lego')">Lego</button>
+    </div>
+
+    <input type="hidden" name="sala" id="sala" required value="<?php echo isset($_POST['sala']) ? htmlspecialchars($_POST['sala']) : ''; ?>">
+
+    <div class="container_calendario">
+        <label for="data"></label>
+        <input type="text" name="data" id="data" required style="display: none;" value="<?php echo isset($_POST['data']) ? htmlspecialchars($_POST['data']) : ''; ?>">
+        <div id="dataContainer"></div>
+
+        <div class="informacoes">
+            <label for="motivo">Motivo:</label>
+            <input type="text" name="motivo" id="motivo" placeholder="Informe o motivo da reserva" maxlength="100" oninput="updateCharCount()" value="<?php echo isset($_POST['motivo']) ? htmlspecialchars($_POST['motivo']) : ''; ?>">
+            <span id="charCount">0/100</span>
+
+            <script>
+                function updateCharCount() {
+                    const motivo = document.getElementById('motivo');
+                    const charCount = document.getElementById('charCount');
+                    charCount.textContent = motivo.value.length + '/100';
+                }
+            </script>
+
+            <label for="horario_inicio">Horário de Início:</label>
+            <input type="text" name="horario_inicio" id="horario_inicio" placeholder="Selecione o horário de início" value="<?php echo isset($_POST['horario_inicio']) ? htmlspecialchars($_POST['horario_inicio']) : ''; ?>">
+
+            <label for="horario_fim">Horário de Fim:</label>
+            <input type="text" name="horario_fim" id="horario_fim" placeholder="Selecione o horário de fim" value="<?php echo isset($_POST['horario_fim']) ? htmlspecialchars($_POST['horario_fim']) : ''; ?>">
+
+            <label for="manutencao_id">Usuário do Responsável pela Manutenção:</label>
+            <select name="manutencao_id" id="manutencao_id" required>
+                <option value="" disabled selected>Selecione o usuário</option>
+                <?php while ($row = $result_manutencao->fetch(PDO::FETCH_ASSOC)) { ?>
+                    <option value="<?php echo htmlspecialchars($row['id']); ?>" <?php echo (isset($_POST['manutencao_id']) && $_POST['manutencao_id'] == $row['id']) ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($row['nome']); ?>
+                    </option>
+                <?php } ?>
+            </select>
+
+            <button type="submit" class="criar">Criar Reserva</button>
         </div>
+    </div>
 
-        <input type="hidden" name="sala" id="sala" required>
+    <!-- Lista de Reservas Confirmadas -->
+    <div class="reservas-confirmadas">
+        <h3>Reservas Confirmadas</h3>
+        <ul>
+            <?php while ($reserva = $result_reservas_confirmadas->fetch(PDO::FETCH_ASSOC)) { 
+                // Formata a data e hora
+                $data_formatada = DateTime::createFromFormat('Y-m-d', $reserva['data'])->format('d/m/Y');
+                $horario_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_inicio'])->format('H:i');
+                $horario_fim_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_fim'])->format('H:i');
+            ?>
+                <li>
+                    <strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario']); ?><br>
+                    <strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?><br>
+                    <strong>Data:</strong> <?php echo $data_formatada . " às " . $horario_formatado . " - " . $horario_fim_formatado; ?><br>
+                </li>
+            <?php } ?>
+        </ul>
+    </div>
+</form>
 
-        <div class="container_calendario">
-            <label for="data"></label>
-            <input type="text" name="data" id="data" required style="display: none;">
-            <div id="dataContainer"></div>
-
-            <div class="informacoes">
-                <label for="motivo">Motivo:</label>
-                <input type="text" name="motivo" id="motivo" placeholder="Informe o motivo da reserva">
-
-                <label for="horario_inicio">Horário de Início:</label>
-                <input type="text" name="horario_inicio" id="horario_inicio" placeholder="Selecione o horário de início">
-
-                <label for="horario_fim">Horário de Fim:</label>
-                <input type="text" name="horario_fim" id="horario_fim" placeholder="Selecione o horário de fim">
-
-                <label for="manutencao_id">Usuario do Responsável pela Manutenção:</label>
-                <select name="manutencao_id" id="manutencao_id" required>
-                <option value="" disabled selected>Selecione o user</option>
-                    <?php while ($row = $result_manutencao->fetch(PDO::FETCH_ASSOC)) { ?>
-                        <option value="<?php echo htmlspecialchars($row['id']); ?>"><?php echo htmlspecialchars($row['nome']); ?></option>
-                    <?php } ?>
-                </select>
-
-                <button type="submit" class="criar">Criar Reserva</button>
-        </div>
-       </div>
-       <div class="reservas-confirmadas">
-    <h3>Reservas Confirmadas</h3>
-    <ul>
-    <?php while ($reserva = $result_reservas_confirmadas->fetch(PDO::FETCH_ASSOC)) { 
-        // Formata a data e hora
-        $data_formatada = DateTime::createFromFormat('Y-m-d', $reserva['data'])->format('d/m/Y');
-        $horario_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_inicio'])->format('H:i');
-        $horario_fim_formatado = DateTime::createFromFormat('H:i:s', $reserva['horario_fim'])->format('H:i');
-    ?>
-        <li>
-        <strong>Usuário:</strong> <?php echo htmlspecialchars($reserva['usuario']); ?><br>
-        <strong>Sala:</strong> <?php echo htmlspecialchars($reserva['sala']); ?><br>
-        <strong>Data:</strong> <?php echo $data_formatada . " às " . $horario_formatado . " - " . $horario_fim_formatado; ?><br>
-    </li>
-<?php } ?>
-    </ul>
-</div>
-
-    </form>
 
     <script>
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
 
-        document.querySelector('form').onsubmit = function(event) {
-            const horarioInicio = document.getElementById('horario_inicio').value;
-            const horarioFim = document.getElementById('horario_fim').value;
-
-            console.log("Horário de Início:", horarioInicio);
-            console.log("Horário de Fim:", horarioFim);
-
-            if (!horarioInicio || !horarioFim) {
-                alert("Por favor, selecione os horários de início e fim.");
-                event.preventDefault();
-                return false;
+        flatpickr("#data", {
+            dateFormat: "Y-m-d",
+            inline: true,
+            minDate: "today", // Impede a seleção de datas passadas
+            disable: [
+                function(date) {
+                    return (date.getDay() === 6 || date.getDay() === 0); // Desabilita sábados e domingos
+                }
+            ],
+            appendTo: document.getElementById('dataContainer'),
+            onChange: function(selectedDates, dateStr) {
+                document.getElementById('data').value = dateStr;
             }
-        };
+        });
+    });
 
-
-        document.addEventListener('DOMContentLoaded', function() {
+     document.addEventListener('DOMContentLoaded', function() {
             const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
 
             flatpickr("#data", {
@@ -259,28 +278,31 @@ ob_end_flush();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            const horarioInicioPicker = flatpickr("#horario_inicio", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                minTime: "08:00",
-                maxTime: "22:00"
-            });
+    const horarioInicioPicker = flatpickr("#horario_inicio", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "07:00", // Hora mínima de início (7h)
+        maxTime: "17:00", // Hora máxima de fim (17h)
+        minuteIncrement: 50, // Intervalo de 50 minutos
+        onChange: function(selectedDates, dateStr) {
+            // Atualiza o horário de fim para ser após o horário de início
+            horarioFimPicker.set("minTime", dateStr);
+        }
+    });
 
-            const horarioFimPicker = flatpickr("#horario_fim", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "H:i",
-                time_24hr: true,
-                minTime: "08:00",
-                maxTime: "22:00"
-            });
+    const horarioFimPicker = flatpickr("#horario_fim", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "07:50", // O fim deve ser no mínimo 50 minutos após o início
+        maxTime: "17:50", // Hora máxima de fim (17h50)
+        minuteIncrement: 50 // Intervalo de 50 minutos
+    });
+});
 
-            horarioInicioPicker.config.onChange.push(function(selectedDates, dateStr) {
-                horarioFimPicker.set("minTime", dateStr);
-            });
-        });
     </script>
 </body>
 </html>

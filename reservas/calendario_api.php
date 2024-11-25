@@ -38,31 +38,25 @@ echo json_encode($datas_indisponiveis);
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let calendarEl = document.getElementById('calendar');
+            const datasIndisponiveis = <?php echo json_encode($datas_indisponiveis); ?>;
 
-    // Função para buscar datas indisponíveis
-    fetch('calendario_api.php')
-        .then(response => response.json())
-        .then(datasIndisponiveis => {
-            let calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                selectable: true,
-                dateClick: function(info) {
-                    // Impede a seleção de dias indisponíveis
-                    if (datasIndisponiveis.includes(info.dateStr)) {
-                        alert("Este dia está indisponível para reserva.");
-                    } else {
-                        // Aqui você pode redirecionar para o formulário de reserva ou abrir um modal
-                        alert("Dia disponível para reserva!");
+            flatpickr("#data", {
+                dateFormat: "Y-m-d",
+                inline: true,
+                minDate: "today",
+                disable: [
+                    ...datasIndisponiveis.map(data => new Date(data)),
+                    function(date) {
+                        return (date.getDay() === 6 || date.getDay() === 0);
                     }
-                },
-                events: datasIndisponiveis.map(data => ({ start: data, display: 'background', color: '#FF0000' }))
+                ],
+                appendTo: document.getElementById('dataContainer'),
+                onChange: function(selectedDates, dateStr) {
+                    document.getElementById('data').value = dateStr;
+                }
             });
+        });
 
-            calendar.render();
-        })
-        .catch(error => console.error("Erro ao carregar o calendário:", error));
-});
 </script>
 
 </body>

@@ -2,7 +2,7 @@
 // Inclui a conexão e a proteção de sessão
 include 'conection.php';
 include 'protect.php';
-//include 'header.php';
+//include 'header2.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['id'])) {
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($stmt_update->execute($params)) {
         // Redireciona após o sucesso
-        header("Location: /tcc_senai/ProfArea/profarea.php");
+        header("Location: /tcc_senai/ManuArea/manutencao.php");
         exit(); // Sempre finalize após o redirecionamento
     } else {
         echo "Erro ao atualizar o perfil: " . $stmt_update->errorInfo()[2];
@@ -216,8 +216,9 @@ input[type="password"]:focus {
         
         <!-- Botão de voltar dentro do formulário, mas não como submit -->
         <div class="voltar-container">
-            <a href="../ProfArea/profarea.php" class="botao_link">Voltar</a>
+            <a href="../ManuArea/manutencao.php" class="botao_link">Voltar</a>
         </div>
     </form>
 </body>
 </html>
+
