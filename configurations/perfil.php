@@ -216,7 +216,7 @@ input[type="password"]:focus {
         
         <!-- Botão de voltar dentro do formulário, mas não como submit -->
         <div class="voltar-container">
-            <a href="../ProfArea/profarea.php" class="botao_link">Voltar</a>
+            <a href="../reservas/reservas.php" class="botao_link">Voltar</a>
         </div>
     </form>
 </body>

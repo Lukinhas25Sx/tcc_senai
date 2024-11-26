@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($cargo == 'Manutenção') {
                     header("Location: ../ManuArea/manutencao.php");
                 } elseif ($cargo == 'Professor') {
-                    header("Location: ../ProfArea/profarea.php");
+                    header("Location: ../reservas/reservas.php");
                 } else {
                     echo "Cargo não reconhecido.";
                 }

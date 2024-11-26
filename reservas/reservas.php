@@ -75,7 +75,13 @@ ob_end_flush();
     <link rel="stylesheet" href="style.css">
     <title>Reservas</title>
 </head>
-<body class="with-header" style="padding-top: 70px;">
+<body class="with-header" style="padding-top: 90px;">
+    
+    <div>
+        <a href="criar_reserva.php" class="botao_link">Criar Nova Reserva</a>
+        <a href="../ProfArea/profarea.php" class="botao_link">Enviar mensagem</a>
+    </div>
+
     <h1>Reservas Confirmadas</h1>
     <div class="container">
         <?php if (empty($reservas_confirmadas)): ?>
@@ -130,8 +136,5 @@ ob_end_flush();
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
-
-    <a href="criar_reserva.php" class="botao_link">Criar Nova Reserva</a>
-    <a href="../ProfArea/profarea.php" class="botao_link">Sair</a>
 </body>
 </html>

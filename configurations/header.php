@@ -121,11 +121,11 @@ $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
         <!-- Botão de logout no lado esquerdo -->
          <div class="logoutereserva">
          <a href="../configurations/logout.php" class="logout-btn">Sair</a>
-         <a href="../reservas/reservas.php" style="padding: 10px; color: white; text-decoration: none; border-radius: 5px;">Fazer Reserva</a>
+         <a href="../ProfArea/profarea.php" style="padding: 10px; color: white; text-decoration: none; border-radius: 5px;">Envie sua mensagem</a>
 
          </div>
 
-         <a href="../ProfArea/profarea.php" class="inicial">Edu Organiza</a>
+         <a href="../reservas/reservas.php" class="inicial">Edu Organiza</a>
 
         <!-- Informações do usuário no lado direito -->
         <div class="user-info">
